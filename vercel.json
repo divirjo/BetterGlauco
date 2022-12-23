@@ -3,13 +3,18 @@
     "builds": [
         {
             "src": "BetterGlauco/wsgi.py",
-            "use": "@vercel/python"
+            "use": "@vercel/python",
+            "config": { "maxLambdaSize": "15mb"}
         }
     ],
     "routes": [
         {
-            "src": "/(.*)",
-            "dest": "BetterGlauco/wsgi.py"           
+          "src": "/static/(.*)",
+          "dest": "/static/$1"
+        },
+        {
+          "src": "/(.*)",
+          "dest": "BetterGlauco/wsgi.py"
         }
-    ]
+      ]
 }
