@@ -5,7 +5,8 @@
         {
             "src": "BetterGlauco/wsgi.py",
             "use": "@vercel/python",
-            "config": { "maxLambdaSize": "30mb"}
+            "config": { "maxLambdaSize": "30mb",
+                        "runtime": "python3.10"}
         },
         {
           "src": "vercel_build.sh",
