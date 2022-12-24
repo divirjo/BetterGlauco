@@ -10,10 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import dj_database_url
 from dotenv import load_dotenv
-import mysql.connector
 import os
 from pathlib import Path
+
 
 #carrega variáveis de ambiente
 load_dotenv()
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "investimento",
 ]
 
 MIDDLEWARE = [
@@ -82,26 +84,19 @@ WSGI_APPLICATION = "BetterGlauco.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {}
-'''
+
+
 DATABASES = {
     "default": {
-        "ENGINE": 'mysql.connector.django', #"django.db.backends.mysql",
-        'NAME': os.environ.get('DATABASE_NAME'),
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-        'HOST': os.environ.get('DATABASE_URL'),
-        'PORT': '3306',
-        'OPTIONS':{
-            'CHARSET':'utf8mb4'    
-        },
-        'TEST':{
-            'CHARSET':'utf8mb4',
-            'COLLATION':'utf8mb4_unicode_ci'
-        }   
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('DB_NAME'), 
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'), 
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
-'''
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -148,3 +143,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles_build" / "static"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Define que o usuário é gerido pelo APP investimento, classe usuario
+AUTH_USER_MODEL = 'investimento.Usuario'
