@@ -2,6 +2,7 @@
 
 # Build the project
 echo "Building the project..."
+python -V
 
 echo "Make Migration..."
 python manage.py makemigrations --noinput
