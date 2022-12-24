@@ -1,17 +1,21 @@
 {
     "version": 2,
+    "name": "glauco",
     "builds": [
         {
             "src": "BetterGlauco/wsgi.py",
             "use": "@vercel/python",
             "config": { "maxLambdaSize": "15mb"}
+        },
+        {
+        "src": "build_files.sh",
+        "use": "@vercel/static",
+        "config": {
+          "distDir": "staticfiles"
+          }
         }
     ],
     "routes": [
-        {
-          "src": "/static/(.*)",
-          "dest": "/static/$1"
-        },
         {
           "src": "/(.*)",
           "dest": "BetterGlauco/wsgi.py"
