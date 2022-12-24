@@ -3,17 +3,17 @@
     "name": "vercel_build_staticfiles",
     "builds": [
         {
-        "src": "vercel_build_staticfiles.sh",
-        "use": "@vercel/static-build",
-        "config": {
-          "distDir": "staticfiles_build"
-          }
-        },
-        {
             "src": "BetterGlauco/wsgi.py",
             "use": "@vercel/python",
             "config": { "maxLambdaSize": "30mb"}
-        }
+        },
+        {
+          "src": "vercel_build.sh",
+          "use": "@vercel/static-build",
+          "config": {
+            "distDir": "staticfiles_build"
+            }
+          }
     ],
     "routes": [
         {
