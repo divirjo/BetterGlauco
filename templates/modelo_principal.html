@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="pt-br">
+
+    <head>
+        <title>
+            {% block titulo %}
+            {% endblock %}
+        </title>
+        <meta charset="UTF-8">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+              theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Verdana', 'Tahoma', 'sans-serif' ,'ui-sans-serif'],
+                        cursive: ['"Dancing Script"','cursive','sans-serif']
+                  }
+                }
+              }
+            }
+          </script>
+          <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+
+        {% block headCSS %}
+        {% endblock %}
+
+    </head>
+
+    <body class="font-sans">
+        {% block content %}
+        {% endblock %}
+
+        {% block javascript %}
+        {% endblock %}
+    </body>
+
+</html>

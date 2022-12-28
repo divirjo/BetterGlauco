@@ -143,9 +143,9 @@ STATIC_ROOT = BASE_DIR / "staticfiles_build" / "static"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Define que o usuário é gerido pelo APP investimento, classe usuario
+# Define que o usuário é gerido pela classe usuario
 AUTH_USER_MODEL = 'investimento.Usuario'
 
 # BLOQUEIO DE ACESSO ÀS PÁGINAS INTERNAS
 LOGIN_REDIRECT_URL = 'investimento:home_investimento'
-LOGIN_URL = 'investimento:login'
+LOGIN_URL = 'login'

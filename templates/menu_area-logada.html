@@ -1,0 +1,43 @@
+{% load static %}
+
+<header class="row-start-1 text-center">
+	<a href="{% url 'investimento:home_investimento' %}" class="">
+		<img id="logo" class =" w-3/5 mx-auto" src="{% static 'imagens/logo_color.svg' %}" alt="Logo better glauco">
+		<p id="marca" class ="text-sm font-cursive ">Better Glauco</p>
+	</a>
+
+</header>
+<nav class="row-start-2 text-sm font-semibold">
+	<ul class="list-none">
+		<li> Investimentos: </li>
+		<li></li>
+		<li>
+			<a href="atualizar-investimentos" class=" underline decoration-transparent hover:decoration-inherit hover:text-orange-700 transition duration-300 ease-in-out"> 
+				Atualização 
+			</a>
+		</li>
+		<li>
+			<a href="interno" class=" underline decoration-transparent hover:decoration-inherit hover:text-orange-700 transition duration-300 ease-in-out"> 
+				Painel 
+			</a>
+		</li>
+	</ul>
+</nav>
+<section id="controles" class="row-start-3">
+
+	<a href="/">
+		<span title="Sair">
+			<ion-icon name="close-circle"></ion-icon>
+		</span>
+	</a>
+	<a href="/"> 
+		<span title="Ajuda">
+			<ion-icon name="help-circle"></ion-icon>
+		</span>
+	</a>
+	<a href="/"> 
+		<span title="Configurar">
+			<ion-icon name="build"></ion-icon>
+		</span>
+	</a>
+</section>

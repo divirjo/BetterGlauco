@@ -1,0 +1,28 @@
+{% load static %}
+
+<header id="headerInicial" class="col-start-2 rol-start-1 text-center">
+    <a href="/" class="">
+        <img id="logoInicio" class =" w-1/5 mx-auto" src="{% static 'imagens/logo_color.svg' %}"
+            alt="Logo better glauco">
+        <p id="marcaInicio" class ="text-xl font-cursive " >Better Glauco</p>
+    </a>
+</header>
+<nav id="menuSuperior" class="col-start-3 rol-start-1 text-right">
+	<ul class="list-none">
+		<li class="inline" >
+            <a href="{% url 'login' %}" class="text-orange-700 underline decoration-transparent hover:decoration-inherit transition duration-300 ease-in-out"> 
+                Entrar
+            </a>
+        </li>
+		<li class="inline">
+            <a href="{% url 'sobre' %}" class="text-orange-700 underline decoration-transparent hover:decoration-inherit transition duration-300 ease-in-out"> 
+                Sobre
+            </a>
+        </li>
+		<li class="inline">
+            <a href="{% url 'contato' %}" class="text-orange-700 underline decoration-transparent hover:decoration-inherit transition duration-300 ease-in-out"> 
+                Contato
+            </a>
+        </li>
+	</ul>
+</nav>

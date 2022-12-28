@@ -1,0 +1,19 @@
+{% extends 'modelo_principal.html' %}
+
+{% block content %}
+<div name="body-formtação" class="grid grid-cols-3 grid-rows-[1/4_1fr_1fr] gap-4">
+
+    {% include 'menu_aberto.html' %}
+
+    <main class="col-start-1 col-span-4 rol-start-2">
+        {% block conteudo %}
+        {% endblock %}
+    </main>
+
+    <section id="footer" class="col-start-1 col-span-4 rol-start-3">
+        {% include 'footer_aberto.html' %}
+    </section>
+
+
+</div>
+{% endblock %}
