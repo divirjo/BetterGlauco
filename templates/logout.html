@@ -1,0 +1,25 @@
+{% extends 'modelo_aberto.html' %}
+
+{% block titulo %}
+    Better Glauco
+{% endblock %}
+
+{% block conteudo %}
+
+
+<h1  class="font-semibold text-2xl mb-4">
+    Logout
+</h1>
+
+<p class="text-base mb-4">Você foi desconectado do sistema com sucesso. Até breve.</p>
+
+
+
+<a href="{% url 'login' %}">
+    <button class="bg-amber-900 py-1 px-3 text-white md:text-lg rounded-md">
+        Entrar
+    </button>
+</a>
+
+
+{% endblock %}

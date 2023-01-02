@@ -7,9 +7,16 @@
 {% block conteudo %}
 
 
-<h1>
-    Formulário login
+<h1  class="font-semibold text-2xl mb-4">
+    Olá!
 </h1>
+
+<p class="text-base mb-4">Para saber mais sobre o sistema Better Glauco, acesse a página <a href="{% url 'sobre' %}" class="text-orange-700 underline decoration-transparent hover:decoration-inherit transition duration-300 ease-in-out"> sobre</a>. </p>
+
+<p class="text-base mb-4">O código fonte e informações para desenvolvedores estão disponíveis no <a href="https://github.com/divirjo/-BetterGlauco" class="text-orange-700 underline decoration-transparent hover:decoration-inherit transition duration-300 ease-in-out"> Git Hub</a>. </p>
+
+<p class="text-base mb-4">O acesso às areas internas depende de prévio cadastro. Se você possui usuário e senha <a href="{% url 'login' %}" class="text-orange-700 underline decoration-transparent hover:decoration-inherit transition duration-300 ease-in-out"> acesse aqui</a>. </p>
+
 
 
 {% endblock %}

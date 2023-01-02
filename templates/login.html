@@ -1,5 +1,7 @@
 {% extends 'modelo_aberto.html' %}
 
+{% load tailwind_filters %}
+
 {% block titulo %}
     Better Glauco
 {% endblock %}
@@ -7,8 +9,23 @@
 {% block conteudo %}
 
 
-<h1>Login</h1>
-Formulário de login
+<h1  class="font-semibold text-2xl mb-4"> 
+    Entrar
+</h1>
+
+<div class= "flex justify-center">
+    <form method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Faça Login para continuar</legend>
+            {{form|crispy}}
+        </fieldset>
+        <button class="bg-amber-900 py-1 my-2 px-3 w-full text-white md:text-lg rounded-md" type="submit">
+            Entrar
+        </button>
+    </form>
+</div>
+
 
 
 

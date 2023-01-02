@@ -6,3 +6,6 @@ class HomeInvestimento(LoginRequiredMixin, TemplateView):
     
     def get_login_url(self) -> str:
         return super().get_login_url()
+
+class Ajuda(LoginRequiredMixin, TemplateView):
+    template_name = 'ajuda_inicio.html'

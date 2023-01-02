@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "crispy_forms",
+    "crispy_tailwind",
     "investimento",
 ]
 
@@ -149,3 +151,7 @@ AUTH_USER_MODEL = 'investimento.Usuario'
 # BLOQUEIO DE ACESSO ÀS PÁGINAS INTERNAS
 LOGIN_REDIRECT_URL = 'investimento:home_investimento'
 LOGIN_URL = 'login'
+
+#CRISPY FORMS
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'tailwind'
+CRISPY_TEMPLATE_PACK = 'tailwind'

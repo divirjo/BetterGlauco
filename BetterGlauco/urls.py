@@ -22,12 +22,13 @@ from .views import Contato, Homepage, Sobre
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls, name='admin'),
+    path('admin/', admin.site.urls),
     path('', Homepage.as_view(), name='homepage'),
     path('contato/', Contato.as_view(), name='contato'),
-    path('sobre/', Sobre.as_view(), name='sobre'),
     path('invest/', include('investimento.urls', namespace = 'investimento')),
-    path('login/', auth_view.LoginView.as_view(template_name='login.html'), name='login')
+    path('login/', auth_view.LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', auth_view.LogoutView.as_view(template_name='logout.html'), name='logout'),
+    path('sobre/', Sobre.as_view(), name='sobre'),
     ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

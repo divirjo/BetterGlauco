@@ -25,17 +25,17 @@
 </nav>
 <section id="controles" class="row-start-3">
 
-	<a href="/">
+	<a href="{% url 'logout' %}">
 		<span title="Sair">
 			<ion-icon name="close-circle"></ion-icon>
 		</span>
 	</a>
-	<a href="/"> 
+	<a href="{% url 'investimento:ajuda_inicio' %}"> 
 		<span title="Ajuda">
 			<ion-icon name="help-circle"></ion-icon>
 		</span>
 	</a>
-	<a href="/"> 
+	<a href="{% url 'admin:index' %}"> 
 		<span title="Configurar">
 			<ion-icon name="build"></ion-icon>
 		</span>
