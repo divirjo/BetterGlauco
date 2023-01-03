@@ -95,6 +95,9 @@ class Ativo(models.Model):
     
 
 class PosicaoData(models.Model):
+    """
+    Nesta tabela são armazenados as atualizações de valor dos investimentos, viabilizando a análise histórica.
+    """
     ativo = models.ForeignKey('Ativo', 
                               related_name='posicoes',
                               on_delete=models.PROTECT)
@@ -128,6 +131,9 @@ class PosicaoData(models.Model):
 
     
 class ExtratoOperacao(models.Model):
+    """
+    Model da tabela que discrimina as operações de compra e venda de ativos
+    """
     ativo = models.ForeignKey('Ativo', 
                                   related_name='operacoes',
                                   on_delete=models.PROTECT)
