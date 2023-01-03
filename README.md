@@ -1,7 +1,7 @@
 # -BetterGlauco
 
 
-## Instalação
+## Variáveis de ambiente
 É necessário configurar um arquivo (.env) com as variáveis de ambiente com as seguintes constantes:
 
 O Banco de dados foi configurado para o Postgree SQL na [Railway](https://railway.app/)
@@ -15,6 +15,8 @@ DB_PASSWORD=""
 DB_HOST=""
 DB_PORT=""
 
+## Variáveis de expressão monetária
+Para os campos do banco de dados que utilizam variáveis monetárias, utilizamos o modelo [django-money](https://github.com/django-money/django-money)
 
 
 ### Deploy na Vercel
