@@ -9,6 +9,15 @@ LISTA_OPERACOES = (
 )
 
 
+class Parametro(models.Model):
+    """
+    Model com as parametrizações do sistema
+    """
+    BRD_CUSTO = models.DecimalField(max_digits=8,
+                                decimal_places=4,
+                                default=1.0038)
+
+
 
 class Usuario(AbstractUser):
     observacao = models.TextField(max_length=1000)
