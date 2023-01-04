@@ -31,22 +31,33 @@
           <table class="min-w-full">
             <thead class="bg-amber-900 border-b">
               <tr>
-                {% for chave in calculo_brd %}
+                {% for operacao, linha in calculo_brd.items %}
+                  {% if not forloop.counter0 %}
                     <th scope="col" class="text-sm font-medium text-white px-6 py-4 text-left">
-                        {{ chave }}
+                      Operação
                     </th>
+                    {% for chave in linha %}
+                      <th scope="col" class="text-sm font-medium text-white px-6 py-4 text-left">
+                            {{ chave }}
+                      </th>
+                    {% endfor %}
+                  {% endif %}
                 {% endfor %}
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="bg-gray-100 border-b">
-                {% for chave, valor in calculo_brd.items %}
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {{ valor }}
-                    </td>
-                {% endfor %}
-              </tr>
-              
+                </tr>
+              </thead>
+              <tbody>
+                {% for operacao, linha in calculo_brd.items %} 
+                <tr class="bg-gray-100 border-b">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {{ operacao }}
+                  </td>
+                  {% for chave, valor in linha.items %}
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {{ valor }}
+                      </td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>

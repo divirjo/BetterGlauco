@@ -16,6 +16,7 @@ class Parametro(models.Model):
     BRD_CUSTO = models.DecimalField(max_digits=8,
                                 decimal_places=4,
                                 default=1.0038)
+    E_MAIL_API = models.EmailField(default='')
 
 
 
