@@ -1,9 +1,11 @@
 from django.contrib import messages
 from django.utils import timezone
 import requests
-from .models import Ativo, Parametro
+from .models import Ativo
+from .parametro import Constante
 
 class BRD():
+    _CONSTANTE = Constante()
     
     def __init__(self, request):
         self.dolar_venda = 0.0
@@ -11,9 +13,8 @@ class BRD():
         self.ticket_original_valor_us = 0.0
         self.preco_referencia_compra = 0.0
         self.preco_referencia_venda = 0.0
+        self.custos_brd = self._CONSTANTE.BRD_CUSTO()
         self._request = request
-        self._parametros = Parametro.objects.latest('id')
-        self.custos_brd = self._parametros.BRD_CUSTO
         
         if self._request.GET.get('ticket'):
             self.ativo_selecionado = self.carregaAtivo(self._request.GET.get('ticket'))
@@ -68,7 +69,7 @@ class BRD():
         
     
     def consultar_api_cotacoes(self, data_consulta):
-        e_mail = self._parametros.E_MAIL_API
+        e_mail = self._CONSTANTE.E_MAIL_API_SCRAPERLINK()
         link_api='http://api.scraperlink.com/investpy/?email={}&type=historical_data&product=etfs&from_date={}&to_date={}&time_frame=Daily&country=united%20states&symbol={}'.format(e_mail, data_consulta, data_consulta, self.ativo_selecionado.ticket_original)
         print (link_api)
         dados = requests.get(link_api)
