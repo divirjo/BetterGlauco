@@ -4,10 +4,11 @@ import requests
 from .models import Ativo
 from .parametro import Constante
 
+
 class BRD():
     _CONSTANTE = Constante()
     
-    def __init__(self, request):
+    def __init__(self, request, ticket):
         self.dolar_venda = 0.0
         self.dolar_compra = 0.0
         self.ticket_original_valor_us = 0.0
@@ -16,8 +17,8 @@ class BRD():
         self.custos_brd = self._CONSTANTE.BRD_CUSTO()
         self._request = request
         
-        if self._request.GET.get('ticket'):
-            self.ativo_selecionado = self.carregaAtivo(self._request.GET.get('ticket'))
+        if ticket:
+            self.ativo_selecionado = self.carregaAtivo(ticket)
         else:
             messages.warning(self._request, 'Ativo não informado')
             self.ativo_selecionado = Ativo()
@@ -26,15 +27,19 @@ class BRD():
         ativos_localizados = Ativo.objects.filter(ticket__icontains=ticker_informado)
         
         if len(ativos_localizados) > 0:
+            # Neste caso, qualquer ativo é aceito, pois os dados utilizados no cálculo não tem relação com o perfil ativo
             return ativos_localizados[0]
         else:
             messages.error(self._request, 'Ativo {} não cadastrado'.format(ticker_informado))
             return Ativo()
 
-    def calcular_preco_referencia(self):
+    def calcular_preco_referencia(self, valor_US):
         if self.ativo_selecionado.ticket:
             self.get_cotacao_dolar()
-            self.get_cotacao_ticker_referencia()
+            if valor_US > 0:
+                self.ticket_original_valor_us = valor_US
+            else:
+                self.get_cotacao_ticker_referencia()
             self.get_preco_referencia()
 
     
