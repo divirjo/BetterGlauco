@@ -29,23 +29,32 @@ class Valor_compra(LoginRequiredMixin, TemplateView):
     
     def monta_tabela_custos(self, brd):
         valor_US_digitado = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('valor_US'))
-        valor_BR_digitado = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('valor_BRD'))
+
         
         brd.calcular_preco_referencia(valor_US_digitado)
         self.gera_linha_tabela('Compra',brd)
         self.gera_linha_tabela('Venda', brd)
     
     def gera_linha_tabela(self, operacao, brd):
+        valor_BR_digitado = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('valor_BRD'))
+        
         self.calculo_brd[operacao]['Ticket'] = brd.ativo_selecionado.ticket
         self.calculo_brd[operacao]['USA'] = brd.ativo_selecionado.ticket_original
         self.calculo_brd[operacao]['Desdobramento'] = int(brd.ativo_selecionado.desdobramento)
         self.calculo_brd[operacao]['Custo BRD'] = brd.custos_brd
         self.calculo_brd[operacao]['Preço (U$)'] = brd.ticket_original_valor_us
+        
         if operacao == 'Venda':
             self.calculo_brd[operacao]['Dolar (R$)'] = brd.dolar_compra
-            self.calculo_brd[operacao]['Preço Referência (R$)'] = '{:.2f}'.format(brd.preco_referencia_venda)
+            self.calculo_brd[operacao]['Preço referência (R$)'] = '{:.2f}'.format(brd.preco_referencia_venda)
         else:
             self.calculo_brd[operacao]['Dolar (R$)'] = brd.dolar_venda
-            self.calculo_brd[operacao]['Preço Referência (R$)'] = '{:.2f}'.format(brd.preco_referencia_compra)
-            
+            self.calculo_brd[operacao]['Preço referência (R$)'] = '{:.2f}'.format(brd.preco_referencia_compra)
+        
+        self.calculo_brd[operacao]['Preço atual (R$)'] = '{:.2f}'.format(valor_BR_digitado)
+        if brd.preco_referencia_compra == 0:
+            spread = 0
+        else:
+            spread = (valor_BR_digitado / brd.preco_referencia_compra) - 1
+        self.calculo_brd[operacao]['Spread'] = '{:.2%}'.format(spread)
         

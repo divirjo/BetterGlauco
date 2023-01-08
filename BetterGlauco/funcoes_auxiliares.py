@@ -12,7 +12,9 @@ class Funcoes_auxiliares():
         '''
         
         numero_str = numero_str.strip()
-        numero_str = numero_str.replace('.','').replace(',','.')
+               
+        if ',' in numero_str:
+            numero_str = numero_str.replace('.','').replace(',','.')
         
         try:
             return int(numero_str)
