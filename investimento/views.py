@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django_tables2 import SingleTableView
 from django.views.generic import FormView, TemplateView
 from .brd import BRD
+from BetterGlauco.parametro import Constante
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
 
@@ -45,10 +47,10 @@ class Valor_compra(LoginRequiredMixin, TemplateView):
         self.calculo_brd[operacao]['Preço (U$)'] = brd.ticket_original_valor_us
         
         if operacao == 'Venda':
-            self.calculo_brd[operacao]['Dolar (R$)'] = brd.dolar_compra
+            self.calculo_brd[operacao]['Dólar (R$)'] = brd.dolar_compra
             self.calculo_brd[operacao]['Preço referência (R$)'] = '{:.2f}'.format(brd.preco_referencia_venda)
         else:
-            self.calculo_brd[operacao]['Dolar (R$)'] = brd.dolar_venda
+            self.calculo_brd[operacao]['Dólar (R$)'] = brd.dolar_venda
             self.calculo_brd[operacao]['Preço referência (R$)'] = '{:.2f}'.format(brd.preco_referencia_compra)
         
         self.calculo_brd[operacao]['Preço atual (R$)'] = '{:.2f}'.format(valor_BR_digitado)
@@ -57,4 +59,30 @@ class Valor_compra(LoginRequiredMixin, TemplateView):
         else:
             spread = (valor_BR_digitado / brd.preco_referencia_compra) - 1
         self.calculo_brd[operacao]['Spread'] = '{:.2%}'.format(spread)
+    
+    
+class Imposto_brd_usa(LoginRequiredMixin, TemplateView):
+    template_name = 'brd_imposto_usa.html'
+    _CONSTANTE = Constante()
+    tabela = {}
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        valor_dividendos = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('valor_dividendos'))
+        indice_imposto = self._CONSTANTE.BRD_IMPOSTO_DIVIDENDOS_USA()
         
+        self.tabela['Dividendos recebidos (R$)'] = valor_dividendos
+        imposto_retido = valor_dividendos * indice_imposto
+        self.tabela['Imposto de Renda EUA retido na fonte estimado (R$)'] = imposto_retido
+            
+        context['tabela_resultados'] = self.tabela
+        return context
+    
+    
+
+    
+
+        
+            
+
+    

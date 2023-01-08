@@ -89,7 +89,7 @@ class Ativo(models.Model):
                             help_text='Nome do ativo')
     cnpj = models.CharField(max_length=19,
                             help_text='CNPJ do ativo')
-    # Parametrização BRDS (ativo referência e desdobramento)
+    # Parametrização BRDs (ativo referência e desdobramento)
     ticket_original = models.CharField(max_length=10,
                                        default='',
                                        help_text='Código de negociação original do ativo (somente BRDs)')
@@ -120,7 +120,7 @@ class AtivoPerfilCaixa(models.Model):
     corretora = models.ForeignKey('InstituicaoFinanceira', 
                                   related_name='ativos',
                                   on_delete=models.DO_NOTHING)
-    # Percentual ideal de alocao do ativo
+    # Percentual ideal de alocação do ativo
     alocacao_teorica_valor = MoneyField(max_digits=19, 
                        decimal_places=4, 
                        default_currency='BRL',
@@ -159,7 +159,7 @@ class PosicaoData(models.Model):
                        decimal_places=4, 
                        default_currency='BRL',
                        default=0)
-    # valor dividendos recebibos
+    # valor dividendos recebidos
     dividendos = MoneyField(max_digits=19, 
                        decimal_places=4, 
                        default_currency='BRL',
@@ -179,7 +179,7 @@ class ExtratoOperacao(models.Model):
     Model da tabela que discrimina as operações de compra e venda de ativos
     """
     ativo_perfil_caixa = models.ForeignKey('AtivoPerfilCaixa', 
-                              related_name='oeracoes',
+                              related_name='operacoes',
                               on_delete=models.PROTECT)
     data = models.DateTimeField(default=timezone.now)
     operacao = models.CharField(max_length=10, choices=LISTA_OPERACOES)

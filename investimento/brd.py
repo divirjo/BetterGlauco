@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.utils import timezone
 import requests
 from .models import Ativo
-from .parametro import Constante
+from BetterGlauco.parametro import Constante
 
 
 class BRD():
@@ -45,7 +45,7 @@ class BRD():
     
     def get_cotacao_dolar(self):
         '''
-        Obtem o valor do dolar para venda e compra, consultando a API do Banco Central
+        Obtém o valor do dolar para venda e compra, consultando a API do Banco Central
         '''
         data_atual = timezone.now().strftime(f"%m-%d-%Y")
         link_api_bacen = "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoMoedaAberturaOuIntermediario(codigoMoeda=@codigoMoeda,dataCotacao=@dataCotacao)?@codigoMoeda='USD'&@dataCotacao='{}'&$format=json".format(data_atual)
@@ -61,7 +61,7 @@ class BRD():
         
     def get_cotacao_ticker_referencia(self):
         '''
-        Obtem o valor do ticker de referência, em dólar
+        Obtém o valor do ticker de referência, em dólar
         '''
               
         data_atual = timezone.now().strftime(f"%Y-%m-%d")
