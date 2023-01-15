@@ -1,7 +1,7 @@
 {% extends 'modelo_principal.html' %}
 
 {% block content %}
-<div name="body-formtação" class="grid grid-cols-[150px_1fr] grid-rows-[50px_1fr_50px] gap-4 " >
+<div name="body-formatacao" class="grid grid-cols-[150px_1fr] grid-rows-[50px_1fr_50px] gap-4 " >
 
     <section id="lateral" class="col-start-1 row-start-1 row-span-2 grid grid-rows-[1/10_1fr_1/10] bg-orange-200">
         {% include 'menu_area-logada.html' %}
@@ -11,7 +11,7 @@
         {% if messages %}
             <ul class="px-4 py-4">
                 {% for message in messages %}
-                    <li
+                    <li 
                         {% if message.tags == 'debug' %} 
                             class=" bg-orange-600 text-white font-semibold "
                         {% endif %}
@@ -26,7 +26,8 @@
                         {% endif %}
                         {% if message.tags == 'success' %} 
                         class=" bg-green-300 font-semibold"
-                        {% endif %}>
+                        {% endif %} 
+                        >
                         Atenção: {{ message }}
                     </li>
                 {% endfor %}    

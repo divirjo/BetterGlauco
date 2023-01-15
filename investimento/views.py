@@ -12,6 +12,12 @@ class HomeInvestimento(LoginRequiredMixin, TemplateView):
     def get_login_url(self) -> str:
         return super().get_login_url()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        perfil_ativo_id = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('perfil')) 
+        context['perfil_ativo_id'] = perfil_ativo_id       
+        return context  
+
 
 class Ajuda(LoginRequiredMixin, TemplateView):
     template_name = 'ajuda_inicio.html'

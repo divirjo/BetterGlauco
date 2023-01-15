@@ -1,0 +1,65 @@
+{% extends 'modelo_area-logada.html' %}
+
+{% block titulo %}
+    Better Glauco - Investimentos
+{% endblock %}
+
+
+{% block conteudo %}
+<div name="body-investimentos" class="grid grid-rows-[40px_1fr] gap-4 " >
+
+    <section name="barra_titulo" class="row-start-1 
+                                        grid grid-cols-[4fr_1fr] 
+                                        bg-gray-100">
+        <div name="titulo_pagina" class="col-start-1"> 
+            <h1  class="font-semibold text-2xl mt-1">
+                {% block titulo_pagina %}
+                {% endblock %}
+            </h1>
+        </div>
+        <form name = "selecionar_perfil" method="get" action="{% url 'investimento:home_investimento' %}" class="col-start-2 mt-1">
+            <label for="perfil" class="form-label text-gray-500"> Perfil</label>
+            <select name="perfil" class="form-select form-select-sm appearance-none
+                                        w-2/5
+                                        px-2
+                                        py-1
+                                        text-sm
+                                        font-normal
+                                        text-gray-700
+                                        bg-white bg-clip-padding bg-no-repeat
+                                        border border-solid border-gray-300
+                                        rounded
+                                        transition
+                                        ease-in-out
+                                        m-0
+                                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none">
+              <option value="0">Selecionar perfil...</option>
+                 {% for perfil in lista_perfis %}
+                    {% if perfil.id == perfil_ativo_id %}
+                        <option selected value="{{ perfil.id }}">
+                    {% else %}
+                        <option value="{{ perfil.id }}">
+                    {% endif %}
+                    {{ perfil.nome }} 
+              </option>
+                {% endfor %}
+          </select>
+          <button type="submit" class="form-check 
+                                        bg-amber-900 w-2/5 rounded-md
+                                        text-white text-lg" >
+            Carregar
+          </button>
+
+        </form>
+    </section>
+
+
+</div>
+
+<section name="conteudo_investimentos" class="row-start-2">
+    {% block conteudo_investimentos %}
+    {% endblock %}
+</section>
+
+{% endblock %}
+
