@@ -1,0 +1,14 @@
+{% extends 'modelo_investimentos.html' %}
+
+{% block titulo_pagina %}
+    Configurações
+{% endblock %}
+
+{% block conteudo_investimentos %}
+<a href="{% url 'admin:index' %}"> 
+    <span title="Configurar">
+        <ion-icon name="build"></ion-icon>
+    </span>
+</a>
+
+{% endblock %}

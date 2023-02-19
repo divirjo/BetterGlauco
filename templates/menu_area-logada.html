@@ -1,7 +1,13 @@
 {% load static %}
 
 <header class="row-start-1 text-center">
-	<a href="{% url 'investimento:home_investimento' %}" class="">
+	<a href="
+		{% if perfil_ativo_id %}
+			{% url 'investimento:home_investimento' perfil_ativo_id  %}
+		{% else %}
+			{% url 'investimento:home_investimento' %}
+		{% endif %}"
+	 	class="">
 		<img id="logo" class =" w-3/5 mx-auto" src="{% static 'imagens/logo_color.svg' %}" alt="Logo better glauco">
 		<p id="marca" class ="text-sm font-cursive ">Better Glauco</p>
 	</a>
@@ -23,14 +29,14 @@
 		</li>
 			<ul class="list-none font-normal">
 				<li>
-					<a href="{% url 'investimento:valor_compra' %}" 
+					<a href="{% url 'investimento:valor_compra' perfil_ativo_id %}" 
 						class=" underline decoration-transparent 
 								hover:decoration-inherit hover:text-orange-700 transition duration-300 ease-in-out"> 
 						Valor Compra
 					</a>
 				</li>
 				<li>
-					<a href="{% url 'investimento:imposto_dividendo_brd' %}" 
+					<a href="{% url 'investimento:imposto_dividendo_brd' perfil_ativo_id %}" 
 						class=" underline decoration-transparent 
 								hover:decoration-inherit hover:text-orange-700 transition duration-300 ease-in-out"> 
 						Imposto dividendos
@@ -52,7 +58,7 @@
 			<ion-icon name="help-circle"></ion-icon>
 		</span>
 	</a>
-	<a href="{% url 'admin:index' %}"> 
+	<a href="{% url 'investimento:configuracao' perfil_ativo_id %}"> 
 		<span title="Configurar">
 			<ion-icon name="build"></ion-icon>
 		</span>

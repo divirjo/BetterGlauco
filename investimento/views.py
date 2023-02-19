@@ -5,6 +5,15 @@ from .brd import BRD
 from BetterGlauco.parametro import Constante
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
+class Auxiliar():
+
+    def get_perfil_ativo(request, **kwargs):
+        if request.GET.get('perfil'):
+            id_perfil = Funcoes_auxiliares.converte_numero_str(request.GET.get('perfil')) 
+        else:
+            id_perfil = kwargs.get('id_perfil', 0) 
+        return id_perfil
+
 
 class HomeInvestimento(LoginRequiredMixin, TemplateView):
     template_name = 'invest_inicio.html'
@@ -14,14 +23,41 @@ class HomeInvestimento(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        perfil_ativo_id = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('perfil')) 
-        context['perfil_ativo_id'] = perfil_ativo_id       
+        context['perfil_ativo_id'] = Auxiliar.get_perfil_ativo(self.request, **kwargs)
         return context  
 
 
 class Ajuda(LoginRequiredMixin, TemplateView):
     template_name = 'ajuda_inicio.html'
+
+
+class ConfiguracaoMenu(LoginRequiredMixin, TemplateView):
+    template_name = 'configuracao_inicio.html'
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['perfil_ativo_id'] = Auxiliar.get_perfil_ativo(self.request, **kwargs)
+        return context 
+
+
+class Imposto_brd_usa(LoginRequiredMixin, TemplateView):
+    template_name = 'brd_imposto_usa.html'
+    _CONSTANTE = Constante()
+    tabela = {}
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['perfil_ativo_id'] = Auxiliar.get_perfil_ativo(self.request, **kwargs) 
+        valor_dividendos = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('valor_dividendos'))
+        indice_imposto = self._CONSTANTE.BRD_IMPOSTO_DIVIDENDOS_USA()
+        
+        self.tabela['Dividendos recebidos (R$)'] = valor_dividendos
+        imposto_retido = valor_dividendos * indice_imposto
+        self.tabela['Imposto de Renda EUA retido na fonte estimado (R$)'] = imposto_retido
+            
+        context['tabela_resultados'] = self.tabela
+        return context
+        
     
 class Valor_compra(LoginRequiredMixin, TemplateView):
     template_name = 'valor_compra.html'
@@ -29,6 +65,7 @@ class Valor_compra(LoginRequiredMixin, TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['perfil_ativo_id'] = Auxiliar.get_perfil_ativo(self.request, **kwargs) 
         brd_ativo = BRD(self.request, self.request.GET.get('ticket'))
         if brd_ativo.ativo_selecionado.ticket:
             self.monta_tabela_custos(brd_ativo)
@@ -67,23 +104,7 @@ class Valor_compra(LoginRequiredMixin, TemplateView):
         self.calculo_brd[operacao]['Spread'] = '{:.2%}'.format(spread)
     
     
-class Imposto_brd_usa(LoginRequiredMixin, TemplateView):
-    template_name = 'brd_imposto_usa.html'
-    _CONSTANTE = Constante()
-    tabela = {}
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        valor_dividendos = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('valor_dividendos'))
-        indice_imposto = self._CONSTANTE.BRD_IMPOSTO_DIVIDENDOS_USA()
-        
-        self.tabela['Dividendos recebidos (R$)'] = valor_dividendos
-        imposto_retido = valor_dividendos * indice_imposto
-        self.tabela['Imposto de Renda EUA retido na fonte estimado (R$)'] = imposto_retido
-            
-        context['tabela_resultados'] = self.tabela
-        return context
-    
+
     
 
     
