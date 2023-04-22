@@ -5,10 +5,71 @@
 {% endblock %}
 
 {% block conteudo_investimentos %}
-<a href="{% url 'admin:index' %}"> 
-    <span title="Configurar">
-        <ion-icon name="build"></ion-icon>
-    </span>
-</a>
+
+<div class="flex flex-wrap justify-between space-x-2">
+    
+    <div class="max-w-xs rounded-lg bg-white shadow-lg">
+        <div class="p-6">
+          <h5
+            class="mb-2 text-xl font-medium leading-tight text-neutral-800">
+            Ativos
+          </h5>
+          <p class="mb-4 text-base text-neutral-600">
+            Cadastro dos ativos (produtos de investimento)
+          </p>
+          <a href="{% url 'admin:index' %}"> 
+              <button
+              type="button"
+              class="inline-block rounded bg-neutral-700 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+              data-te-ripple-init
+              data-te-ripple-color="light">
+              Editar ativo
+              </button>
+          </a>
+        </div>
+    </div>
+    
+    <div class="max-w-xs rounded-lg bg-white shadow-lg">
+        <div class="p-6">
+          <h5
+            class="mb-2 text-xl font-medium leading-tight text-neutral-800">
+            Ativos
+          </h5>
+          <p class="mb-4 text-base text-neutral-600">
+            Cadastro dos ativos (produtos de investimento)
+          </p>
+          <a href="{% url 'investimento:config_ativos' perfil_ativo_id %}"> 
+              <button
+              type="button"
+              class="inline-block rounded bg-neutral-700 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+              data-te-ripple-init
+              data-te-ripple-color="light">
+              Editar ativo
+              </button>
+          </a>
+        </div>
+    </div>
+
+    <div class="max-w-xs rounded-lg bg-white shadow-lg">
+      <div class="p-6">
+        <h5
+          class="mb-2 text-xl font-medium leading-tight text-neutral-800">
+          Administração
+        </h5>
+        <p class="mb-4 text-base text-neutral-600">
+          Acesso ao painel de administração do sistema
+        </p>
+        <a href="{% url 'admin:index' %}"> 
+            <button
+            type="button"
+            class="inline-block rounded bg-neutral-700 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+            data-te-ripple-init
+            data-te-ripple-color="light">
+            Painel de administração
+            </button>
+        </a>
+      </div>
+    </div>
+</div>
 
 {% endblock %}

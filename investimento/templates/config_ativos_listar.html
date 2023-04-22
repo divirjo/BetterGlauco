@@ -1,0 +1,12 @@
+{% extends 'modelo_investimentos.html' %}
+
+{% block titulo_pagina %}
+    Ativos Cadastrados
+{% endblock %}
+
+{% block conteudo_investimentos %}
+
+{% load django_tables2 %}
+{% render_table table %}
+
+{% endblock %}

@@ -1,7 +1,10 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django_tables2 import SingleTableView
+import django_tables2 as tables2 
 from django.views.generic import FormView, TemplateView
 from .brd import BRD
+from .models import Ativo
+from .tabelas import TabelaAtivos
 from BetterGlauco.parametro import Constante
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
@@ -40,6 +43,28 @@ class ConfiguracaoMenu(LoginRequiredMixin, TemplateView):
         return context 
 
 
+class ConfigurarAtivo(LoginRequiredMixin, tables2.SingleTableView):
+    table_class = TabelaAtivos
+    queryset = Ativo.objects.all()
+    template_name = 'config_ativos_listar.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['perfil_ativo_id'] = Auxiliar.get_perfil_ativo(self.request, **kwargs)
+        messages.warning(self.request, 'Cadastro geral. Alterações aqui afetarão todos os usuários do sistema')
+
+        return context 
+    
+class ConfigurarAtivoEditar(LoginRequiredMixin, TemplateView):
+    template_name = 'configuracao_inicio.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['perfil_ativo_id'] = Auxiliar.get_perfil_ativo(self.request, **kwargs)
+        
+        
+        return context 
+
 class Imposto_brd_usa(LoginRequiredMixin, TemplateView):
     template_name = 'brd_imposto_usa.html'
     _CONSTANTE = Constante()
@@ -73,9 +98,7 @@ class Valor_compra(LoginRequiredMixin, TemplateView):
         return context
     
     def monta_tabela_custos(self, brd):
-        valor_US_digitado = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('valor_US'))
-
-        
+        valor_US_digitado = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('valor_US'))       
         brd.calcular_preco_referencia(valor_US_digitado)
         self.gera_linha_tabela('Compra',brd)
         self.gera_linha_tabela('Venda', brd)

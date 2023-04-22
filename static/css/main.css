@@ -2,3 +2,7 @@ ion-icon {
     pointer-events: none;
     font-size: 32px;
 }
+
+tr.even {
+    background-color: rgb(243 244 246);
+}
