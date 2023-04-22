@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "_betterglauco"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.9"
 django = "^4.2"
 django-crispy-forms = "^2.0"
 crispy-tailwind = "^0.5.0"
