@@ -2,7 +2,7 @@
 
 # Build the project
 echo "### Instalar dependências ###"
-python3.9 pip install --upgrade pip
+python3.9 -m pip install --upgrade pip
 python3.9 -m pip install -r requirements.txt
 python -V
 
