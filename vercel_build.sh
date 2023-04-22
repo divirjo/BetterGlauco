@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # Build the project
-echo "Building the project..."
+echo "### Instalar dependências ###"
+python3.9 pip install --upgrade pip
 python3.9 -m pip install -r requirements.txt
 python -V
 
-echo "Make Migration..."
+echo "### Executando as migrações ###"
 python3.9 manage.py makemigrations --noinput
 python3.9 manage.py migrate --noinput
 
-echo "Collect Static..."
+echo "### Obter estatísticas...###"
 python3.9 manage.py collectstatic --noinput --clear
