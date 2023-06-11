@@ -1,0 +1,21 @@
+{% extends 'modelo_investimentos.html' %}
+{% load crispy_forms_tags %}
+
+{% block titulo_pagina %}
+    Cadastrar ativo
+{% endblock %}
+
+{% block conteudo_investimentos %}
+
+<div class= "grid justify-center">
+    <form action="" method="post">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Crie uma conta para continuar</legend>
+            {{form|crispy}}
+        </fieldset>
+        <button class="bg-amber-900 w-full rounded-md text-white text-lg" type="submit">Salvar</button>
+    </form>
+</div>
+
+{% endblock %}

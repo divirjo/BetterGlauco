@@ -1,6 +1,7 @@
 import django_tables2 as tables
 from BetterGlauco.tabelas_formatacao import ColunaNumericaDecimal
 from .models import Ativo
+from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
 '''
 Informações:
@@ -28,10 +29,15 @@ CSS_PADRAO = {
                  }
 
 
+
 class TabelaAtivos (tables.Table):
+    
     desdobramento = ColunaNumericaDecimal(accessor="desdobramento",
                                           verbose_name="Desdobramento BRD")
     cnpj = tables.Column(verbose_name="CNPJ")
+    
+    editar = tables.LinkColumn('investimento:config_ativos_editar',text='atualizar', args=[tables.utils.A('pk')], orderable=False, empty_values=()) 
+    
 
 #    def render_desdobramento(self, value, column):
 #        column.attrs.update({"td":{'style':'text-align: right;'}})
@@ -40,7 +46,7 @@ class TabelaAtivos (tables.Table):
     class Meta:
         model = Ativo
         attrs = CSS_PADRAO
-
+ 
 
 class Tabela_brd_dividendos_impostos(tables.Table):
     valor_dividendo = tables.Column()

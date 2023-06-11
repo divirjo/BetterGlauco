@@ -1,21 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 import django_tables2 as tables2 
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView, TemplateView, UpdateView
 from .brd import BRD
+from .forms import FormAtivo
 from .models import Ativo
 from .tabelas import TabelaAtivos
 from BetterGlauco.parametro import Constante
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
-
-class Auxiliar():
-
-    def get_perfil_ativo(request, **kwargs):
-        if request.GET.get('perfil'):
-            id_perfil = Funcoes_auxiliares.converte_numero_str(request.GET.get('perfil')) 
-        else:
-            id_perfil = kwargs.get('id_perfil', 0) 
-        return id_perfil
 
 
 class HomeInvestimento(LoginRequiredMixin, TemplateView):
@@ -26,8 +19,17 @@ class HomeInvestimento(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['perfil_ativo_id'] = Auxiliar.get_perfil_ativo(self.request, **kwargs)
-        return context  
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        return context 
+    
+    def set_perfil_session(request, **kwargs):
+         '''
+        Obtém o ID do Perfil da conta ativo no módulo investimento
+        
+        returns: 
+            integer com o ID do Perfil ou 0
+        '''
+
 
 
 class Ajuda(LoginRequiredMixin, TemplateView):
@@ -39,7 +41,7 @@ class ConfiguracaoMenu(LoginRequiredMixin, TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['perfil_ativo_id'] = Auxiliar.get_perfil_ativo(self.request, **kwargs)
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         return context 
 
 
@@ -47,23 +49,52 @@ class ConfigurarAtivo(LoginRequiredMixin, tables2.SingleTableView):
     table_class = TabelaAtivos
     queryset = Ativo.objects.all()
     template_name = 'config_ativos_listar.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['perfil_ativo_id'] = Auxiliar.get_perfil_ativo(self.request, **kwargs)
-        messages.warning(self.request, 'Cadastro geral. Alterações aqui afetarão todos os usuários do sistema')
 
-        return context 
-    
-class ConfigurarAtivoEditar(LoginRequiredMixin, TemplateView):
-    template_name = 'configuracao_inicio.html'
-    
+       
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['perfil_ativo_id'] = Auxiliar.get_perfil_ativo(self.request, **kwargs)
-        
-        
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        messages.warning(self.request, 'Cadastro geral. Alterações aqui afetarão todos os usuários do sistema ')
+        #tabela = self.get_table(**self.get_table_kwargs())
+        #tabela.request = self.request
+        #context[self.get_context_table_name(tabela)] = tabela
         return context 
+
+class ConfigurarAtivoNovo(LoginRequiredMixin, FormView):
+    form_class = FormAtivo
+    template_name = 'config_ativos_editar.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        messages.warning(self.request, 'Cadastro geral. Alterações aqui afetarão todos os usuários do sistema')
+        return context 
+    
+    def form_valid(self, form, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        form.save() # insere o item no BD
+        messages.success(self.request, 'Ativo incluído com sucesso')
+        return redirect('investimento:config_ativos')
+    
+class ConfigurarAtivoEditar(LoginRequiredMixin, UpdateView):
+    form_class = FormAtivo
+    model = Ativo
+    template_name = 'config_ativos_editar.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        messages.warning(self.request, 'Cadastro geral. Alterações aqui afetarão todos os usuários do sistema')
+        return context 
+    
+    def form_valid(self, form, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        form.save() # insere o item no BD
+        messages.success(self.request, 'Ativo alterado com sucesso')
+        return redirect('investimento:config_ativos')
+       
 
 class Imposto_brd_usa(LoginRequiredMixin, TemplateView):
     template_name = 'brd_imposto_usa.html'
@@ -72,7 +103,7 @@ class Imposto_brd_usa(LoginRequiredMixin, TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['perfil_ativo_id'] = Auxiliar.get_perfil_ativo(self.request, **kwargs) 
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs) 
         valor_dividendos = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('valor_dividendos'))
         indice_imposto = self._CONSTANTE.BRD_IMPOSTO_DIVIDENDOS_USA()
         
@@ -90,7 +121,7 @@ class Valor_compra(LoginRequiredMixin, TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['perfil_ativo_id'] = Auxiliar.get_perfil_ativo(self.request, **kwargs) 
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs) 
         brd_ativo = BRD(self.request, self.request.GET.get('ticket'))
         if brd_ativo.ativo_selecionado.ticket:
             self.monta_tabela_custos(brd_ativo)

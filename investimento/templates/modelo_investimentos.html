@@ -35,7 +35,7 @@
                                         focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none">
               <option value="0">Selecionar perfil...</option>
                  {% for perfil in lista_perfis %}
-                    {% if perfil.id == perfil_ativo_id %}
+                    {% if perfil.id == id_perfil_selecionado %}
                         <option selected value="{{ perfil.id }}">
                     {% else %}
                         <option value="{{ perfil.id }}">

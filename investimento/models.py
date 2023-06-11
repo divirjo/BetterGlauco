@@ -84,14 +84,19 @@ class InstituicaoFinanceira(models.Model):
 class Ativo(models.Model):
     # Código da bolsa do ativo ou um apelido do fundo
     ticket = models.CharField(max_length=10,
+                              default='',
+                              blank=True,
                               help_text='Código de negociação do ativo na bolsa')
     nome = models.CharField(max_length=100,
                             help_text='Nome do ativo')
     cnpj = models.CharField(max_length=19,
+                            default='',
+                            blank=True,
                             help_text='CNPJ do ativo')
     # Parametrização BRDs (ativo referência e desdobramento)
     ticket_original = models.CharField(max_length=10,
                                        default='',
+                                       blank=True,
                                        help_text='Código de negociação original do ativo (somente BRDs)')
     desdobramento = models.DecimalField(max_digits=15,
                                 decimal_places=10,

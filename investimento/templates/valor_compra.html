@@ -8,7 +8,7 @@ Obter o valor recomendado para negociação do ativo
 {% block conteudo_investimentos %}
 
 <div class= "grid justify-center">
-    <form method="get" action="{% url 'investimento:valor_compra' perfil_ativo_id %}" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <form method="get" action="{% url 'investimento:valor_compra' %}" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div class="form-group grid grid-cols-4 grid-rows-3 gap-x-4 gap-y-0"> 
             <label for="ticket" class="col-start-1 row-start-1 form-label text-gray-500">Ticket do BRD</label>
             <input type="text" name="ticket" 

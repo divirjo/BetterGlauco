@@ -8,7 +8,7 @@ BRD: Obter o valor do imposto de renda deduzido na fonte nos EUA
 {% block conteudo_investimentos %}
 
 <div class= "grid justify-center">
-    <form method="get" action="{% url 'investimento:imposto_dividendo_brd' perfil_ativo_id %}" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <form method="get" action="{% url 'investimento:imposto_dividendo_brd' %}" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div class="form-group grid grid-cols-2 grid-rows-3 gap-x-4 gap-y-0"> 
             <label for="valor_dividendos" class="col-start-1 row-start-1 form-label text-gray-500">Valor Dividendos (R$)</label>
             <input type="text" name="valor_dividendos" 

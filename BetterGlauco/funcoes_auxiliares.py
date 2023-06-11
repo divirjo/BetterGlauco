@@ -29,3 +29,20 @@ class Funcoes_auxiliares():
         except:
             return 0
         
+
+    def get_perfil_ativo(request, **kwargs):
+        '''
+        Obtém o ID do Perfil da conta ativo no módulo investimento
+        
+        returns: 
+            integer com o ID do Perfil ou 0
+        '''
+        if request.GET.get('perfil'):
+            id_perfil = Funcoes_auxiliares.converte_numero_str(request.GET.get('perfil')) 
+        elif 'id_perfil_selecionado' in request.session:
+            id_perfil = request.session['id_perfil_selecionado']
+        else:
+            id_perfil = 0
+        
+        request.session['id_perfil_selecionado'] = id_perfil
+        return id_perfil
