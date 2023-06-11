@@ -2,7 +2,11 @@
 {% load crispy_forms_tags %}
 
 {% block titulo_pagina %}
-    Cadastrar ativo
+    {% if form.instance.pk %}
+            Atualizar ativo
+    {% else %}
+            Cadastrar ativo
+    {% endif %}
 {% endblock %}
 
 {% block conteudo_investimentos %}
@@ -11,7 +15,6 @@
     <form action="" method="post">
         {% csrf_token %}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Crie uma conta para continuar</legend>
             {{form|crispy}}
         </fieldset>
         <button class="bg-amber-900 w-full rounded-md text-white text-lg" type="submit">Salvar</button>

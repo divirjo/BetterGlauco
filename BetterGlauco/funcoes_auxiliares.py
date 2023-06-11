@@ -8,7 +8,8 @@ class Funcoes_auxiliares():
         '''
         Converte uma string em número, substituindo a vírgula dos decimais por ponto.
         
-        return float ou integer se for número. Se não for, retorna 0
+        return 
+            float ou integer se for número. Se não for, retorna 0
         '''
         
         if not isinstance(numero_str, str):
@@ -16,6 +17,7 @@ class Funcoes_auxiliares():
         
         numero_str = numero_str.strip()
                
+        
         if ',' in numero_str:
             numero_str = numero_str.replace('.','').replace(',','.')
         

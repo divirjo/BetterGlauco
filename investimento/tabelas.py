@@ -28,6 +28,14 @@ CSS_PADRAO = {
                     },
                  }
 
+CSS_LINK = {
+                "td":{
+                    "class":"text-center text-dark font-medium text-base py-3 px-2" 
+                    },
+                "a":{
+                    "class":"border border-amber-900 rounded-md py-1 px-4 text-amber-900 inline-block rounded hover:bg-amber-900 hover:text-white" 
+                    },
+                 }
 
 
 class TabelaAtivos (tables.Table):
@@ -36,7 +44,12 @@ class TabelaAtivos (tables.Table):
                                           verbose_name="Desdobramento BRD")
     cnpj = tables.Column(verbose_name="CNPJ")
     
-    editar = tables.LinkColumn('investimento:config_ativos_editar',text='atualizar', args=[tables.utils.A('pk')], orderable=False, empty_values=()) 
+    editar = tables.LinkColumn('investimento:config_ativos_editar',
+                               text='atualizar', 
+                               args=[tables.utils.A('pk')], 
+                               orderable=False,
+                               empty_values=(),
+                               attrs=CSS_LINK) 
     
 
 #    def render_desdobramento(self, value, column):
