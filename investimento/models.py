@@ -73,6 +73,9 @@ class Caixa(models.Model):
 
 class InstituicaoFinanceira(models.Model):
     nome = models.TextField(max_length=100)
+    perfil = models.ForeignKey('Perfil', 
+                              related_name='instituicoes_financeiras',
+                              on_delete=models.PROTECT)
     
     def __str__(self) -> str:
         """

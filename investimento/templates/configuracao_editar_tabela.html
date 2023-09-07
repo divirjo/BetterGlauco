@@ -3,9 +3,9 @@
 
 {% block titulo_pagina %}
     {% if form.instance.pk %}
-            Atualizar ativo
+            Atualizar {{ nome_parametro }}
     {% else %}
-            Cadastrar ativo
+            Cadastrar {{ nome_parametro }}
     {% endif %}
 {% endblock %}
 

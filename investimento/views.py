@@ -4,9 +4,9 @@ from django.shortcuts import redirect
 import django_tables2 as tables2 
 from django.views.generic import FormView, TemplateView, UpdateView
 from .brd import BRD
-from .forms import FormAtivo
-from .models import Ativo
-from .tabelas import TabelaAtivos
+from .forms import FormAtivo, FormInstituicaoFinanceira
+from .models import Ativo, InstituicaoFinanceira
+from .tabelas import TabelaAtivos, TabelaInstituicaoFinanceira
 from BetterGlauco.parametro import Constante
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
@@ -21,15 +21,6 @@ class HomeInvestimento(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         return context 
-    
-    def set_perfil_session(request, **kwargs):
-         '''
-        Obtém o ID do Perfil da conta ativo no módulo investimento
-        
-        returns: 
-            integer com o ID do Perfil ou 0
-        '''
-
 
 
 class Ajuda(LoginRequiredMixin, TemplateView):
@@ -48,24 +39,25 @@ class ConfiguracaoMenu(LoginRequiredMixin, TemplateView):
 class ConfigurarAtivo(LoginRequiredMixin, tables2.SingleTableView):
     table_class = TabelaAtivos
     queryset = Ativo.objects.all()
-    template_name = 'config_ativos_listar.html'
+    template_name = 'configuracao_listar_tabela.html'
 
        
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['titulo_pagina'] = 'Ativos Cadastrados'
+        context['nome_parametro'] = 'ativo'
+        context['url_insert'] = 'investimento:config_ativo_novo'
         context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         messages.warning(self.request, 'Cadastro geral. Alterações aqui afetarão todos os usuários do sistema ')
-        #tabela = self.get_table(**self.get_table_kwargs())
-        #tabela.request = self.request
-        #context[self.get_context_table_name(tabela)] = tabela
         return context 
 
 class ConfigurarAtivoNovo(LoginRequiredMixin, FormView):
     form_class = FormAtivo
-    template_name = 'config_ativos_editar.html'
+    template_name = 'configuracao_editar_tabela.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['nome_parametro'] = 'ativo'
         context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         messages.warning(self.request, 'Cadastro geral. Alterações aqui afetarão todos os usuários do sistema')
         return context 
@@ -80,10 +72,11 @@ class ConfigurarAtivoNovo(LoginRequiredMixin, FormView):
 class ConfigurarAtivoEditar(LoginRequiredMixin, UpdateView):
     form_class = FormAtivo
     model = Ativo
-    template_name = 'config_ativos_editar.html'
+    template_name = 'configuracao_editar_tabela.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['nome_parametro'] = 'ativo'
         context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         messages.warning(self.request, 'Cadastro geral. Alterações aqui afetarão todos os usuários do sistema')
         return context 
@@ -94,7 +87,63 @@ class ConfigurarAtivoEditar(LoginRequiredMixin, UpdateView):
         form.save() # insere o item no BD
         messages.success(self.request, 'Ativo alterado com sucesso')
         return redirect('investimento:config_ativos')
-       
+
+class ConfigurarInstituicaoFinanceira(LoginRequiredMixin, tables2.SingleTableView):
+    table_class = TabelaInstituicaoFinanceira
+    template_name = 'configuracao_listar_tabela.html'
+    
+    
+    def get_queryset(self, **kwargs):
+        return InstituicaoFinanceira.objects.filter(
+                    perfil_id = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs))
+           
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo_pagina'] = 'Instituições Financeiras Cadastradas'
+        context['nome_parametro'] = 'instituição financeira'
+        context['url_insert'] = 'investimento:config_instituicao_financeira_novo'
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        return context 
+
+class ConfigurarInstituicaoFinanceiraNovo(LoginRequiredMixin, FormView):
+    form_class = FormInstituicaoFinanceira
+    template_name = 'configuracao_editar_tabela.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['nome_parametro'] = 'instituição financeira'
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        return context 
+    
+    def form_valid(self, form, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        instituicao_financeira = form.save(commit=False)
+        instituicao_financeira.perfil_id = context['id_perfil_selecionado']
+        instituicao_financeira.save() 
+        messages.success(self.request, 'Instituição incluída com sucesso')
+        return redirect('investimento:config_instituicao_financeira')
+    
+class ConfigurarInstituicaoFinanceiraEditar(LoginRequiredMixin, UpdateView):
+    form_class = FormInstituicaoFinanceira
+    model = InstituicaoFinanceira
+    template_name = 'configuracao_editar_tabela.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['nome_parametro'] = 'instituição financeira'
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        return context 
+    
+    def form_valid(self, form, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        instituicao_financeira = form.save(commit=False)
+        instituicao_financeira.perfil_id = context['id_perfil_selecionado']
+        instituicao_financeira.save() 
+        form.save() 
+        messages.success(self.request, 'Instituição alterada com sucesso')
+        return redirect('investimento:config_instituicao_financeira')   
 
 class Imposto_brd_usa(LoginRequiredMixin, TemplateView):
     template_name = 'brd_imposto_usa.html'

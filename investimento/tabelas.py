@@ -1,6 +1,6 @@
 import django_tables2 as tables
 from BetterGlauco.tabelas_formatacao import ColunaNumericaDecimal
-from .models import Ativo
+from .models import Ativo, InstituicaoFinanceira
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
 '''
@@ -44,7 +44,7 @@ class TabelaAtivos (tables.Table):
                                           verbose_name="Desdobramento BRD")
     cnpj = tables.Column(verbose_name="CNPJ")
     
-    editar = tables.LinkColumn('investimento:config_ativos_editar',
+    editar = tables.LinkColumn('investimento:config_ativo_editar',
                                text='atualizar', 
                                args=[tables.utils.A('pk')], 
                                orderable=False,
@@ -60,6 +60,20 @@ class TabelaAtivos (tables.Table):
         model = Ativo
         attrs = CSS_PADRAO
  
+ 
+class TabelaInstituicaoFinanceira (tables.Table):
+       
+    editar = tables.LinkColumn('investimento:config_instituicao_financeira_editar',
+                               text='atualizar', 
+                               args=[tables.utils.A('pk')], 
+                               orderable=False,
+                               empty_values=(),
+                               attrs=CSS_LINK) 
+    
+    class Meta:
+        model = InstituicaoFinanceira
+        attrs = CSS_PADRAO
+
 
 class Tabela_brd_dividendos_impostos(tables.Table):
     valor_dividendo = tables.Column()
