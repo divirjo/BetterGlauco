@@ -46,44 +46,6 @@ class Perfil(models.Model):
         return self.nome
 
 
-class Caixa(models.Model):
-    perfil = models.ForeignKey('Perfil', 
-                               related_name='caixas',
-                               on_delete=models.DO_NOTHING)
-    nome = models.CharField(max_length=100)
-    cota_sistema_valor = MoneyField(max_digits=19, 
-                       decimal_places=4, 
-                       default_currency='BRL',
-                       default=0)
-    alocacao_teorica_valor = MoneyField(max_digits=19, 
-                       decimal_places=4, 
-                       default_currency='BRL',
-                       default=0)
-    alocacao_teorica_percentual = models.DecimalField(max_digits=5,
-                                decimal_places=2,
-                                default=0)
-
-    def __str__(self) -> str:
-        """
-            Altera o nome padrão de exibição do objeto da classe.
-        """
-        return self.perfil.nome + ' - ' + self.nome    
-
-
-
-class InstituicaoFinanceira(models.Model):
-    nome = models.TextField(max_length=100)
-    perfil = models.ForeignKey('Perfil', 
-                              related_name='instituicoes_financeiras',
-                              on_delete=models.PROTECT)
-    
-    def __str__(self) -> str:
-        """
-            Altera o nome padrão de exibição do objeto da classe.
-        """
-        return self.nome   
-
-
 class Ativo(models.Model):
     # Código da bolsa do ativo ou um apelido do fundo
     ticket = models.CharField(max_length=10,
@@ -146,6 +108,72 @@ class AtivoPerfilCaixa(models.Model):
                 self.nome)     
 
 
+class Caixa(models.Model):
+    perfil = models.ForeignKey('Perfil', 
+                               related_name='caixas',
+                               on_delete=models.DO_NOTHING)
+    nome = models.CharField(max_length=100)
+    cota_sistema_valor = models.DecimalField(max_digits=19, 
+                       decimal_places=4, 
+                       default=0)
+    alocacao_teorica_valor = models.DecimalField(max_digits=19, 
+                       decimal_places=4, 
+                       default=0)
+    alocacao_teorica_percentual = models.DecimalField(max_digits=5,
+                                decimal_places=2,
+                                default=0)
+
+    def __str__(self) -> str:
+        """
+            Altera o nome padrão de exibição do objeto da classe.
+        """
+        return self.perfil.nome + ' - ' + self.nome    
+
+
+
+class InstituicaoFinanceira(models.Model):
+    nome = models.TextField(max_length=100)
+    perfil = models.ForeignKey('Perfil', 
+                              related_name='instituicoes_financeiras',
+                              on_delete=models.PROTECT)
+    
+    def __str__(self) -> str:
+        """
+            Altera o nome padrão de exibição do objeto da classe.
+        """
+        return self.nome   
+
+
+class ExtratoOperacao(models.Model):
+    """
+    Model da tabela que discrimina as operações de compra e venda de ativos
+    """
+    ativo_perfil_caixa = models.ForeignKey('AtivoPerfilCaixa', 
+                              related_name='operacoes',
+                              on_delete=models.PROTECT)
+    data = models.DateTimeField(default=timezone.now)
+    operacao = models.CharField(max_length=10, choices=LISTA_OPERACOES)
+    valor_unitario = MoneyField(max_digits=19, 
+                       decimal_places=4, 
+                       default_currency='BRL',
+                       default=0)
+    custos_transacao = MoneyField(max_digits=19, 
+                       decimal_places=4, 
+                       default_currency='BRL',
+                       default=0)
+    quantidade = models.DecimalField(max_digits=15,
+                                decimal_places=10,
+                                default=0)
+    
+    def __str__(self) -> str:
+        """
+            Altera o nome padrão de exibição do objeto da classe.
+        """
+        return (self.ativo_perfil_caixa.alocacao_caixa_primaria.perfil.nome + ' - ' + 
+                self.ativo_perfil_caixa.ativo.ticket + ': ' + 
+                self.data.strftime(f"%Y-%m-%d"))    
+
+
 class PosicaoData(models.Model):
     """
     Nesta tabela são armazenados as atualizações de valor dos investimentos, viabilizando a análise histórica.
@@ -182,31 +210,3 @@ class PosicaoData(models.Model):
                 self.data.strftime(f"%Y-%m-%d"))  
 
     
-class ExtratoOperacao(models.Model):
-    """
-    Model da tabela que discrimina as operações de compra e venda de ativos
-    """
-    ativo_perfil_caixa = models.ForeignKey('AtivoPerfilCaixa', 
-                              related_name='operacoes',
-                              on_delete=models.PROTECT)
-    data = models.DateTimeField(default=timezone.now)
-    operacao = models.CharField(max_length=10, choices=LISTA_OPERACOES)
-    valor_unitario = MoneyField(max_digits=19, 
-                       decimal_places=4, 
-                       default_currency='BRL',
-                       default=0)
-    custos_transacao = MoneyField(max_digits=19, 
-                       decimal_places=4, 
-                       default_currency='BRL',
-                       default=0)
-    quantidade = models.DecimalField(max_digits=15,
-                                decimal_places=10,
-                                default=0)
-    
-    def __str__(self) -> str:
-        """
-            Altera o nome padrão de exibição do objeto da classe.
-        """
-        return (self.ativo_perfil_caixa.alocacao_caixa_primaria.perfil.nome + ' - ' + 
-                self.ativo_perfil_caixa.ativo.ticket + ': ' + 
-                self.data.strftime(f"%Y-%m-%d"))    

@@ -4,9 +4,9 @@ from django.shortcuts import redirect
 import django_tables2 as tables2 
 from django.views.generic import FormView, TemplateView, UpdateView
 from .brd import BRD
-from .forms import FormAtivo, FormInstituicaoFinanceira
-from .models import Ativo, InstituicaoFinanceira
-from .tabelas import TabelaAtivos, TabelaInstituicaoFinanceira
+from .forms import FormAtivo, FormCaixa, FormInstituicaoFinanceira
+from .models import Ativo, Caixa, InstituicaoFinanceira
+from .tabelas import TabelaAtivos, TabelaCaixas, TabelaInstituicaoFinanceira
 from BetterGlauco.parametro import Constante
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
@@ -88,6 +88,62 @@ class ConfigurarAtivoEditar(LoginRequiredMixin, UpdateView):
         messages.success(self.request, 'Ativo alterado com sucesso')
         return redirect('investimento:config_ativos')
 
+class ConfigurarCaixa(LoginRequiredMixin, tables2.SingleTableView):
+    table_class = TabelaCaixas
+    template_name = 'configuracao_listar_tabela.html'
+    
+    
+    def get_queryset(self, **kwargs):
+        return Caixa.objects.filter(
+                    perfil_id = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs))
+           
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo_pagina'] = 'Caixas: Alocação por classe de ativo'
+        context['nome_parametro'] = 'caixa'
+        context['url_insert'] = 'investimento:config_caixa_novo'
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        return context 
+
+class ConfigurarCaixaNovo(LoginRequiredMixin, FormView):
+    form_class = FormCaixa
+    template_name = 'configuracao_editar_tabela.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['nome_parametro'] = 'caixa'
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        return context 
+    
+    def form_valid(self, form, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        caixa = form.save(commit=False)
+        caixa.perfil_id = context['id_perfil_selecionado']
+        caixa.save() 
+        messages.success(self.request, 'Caixa cadastrada com sucesso')
+        return redirect('investimento:config_caixa')
+    
+class ConfigurarCaixaEditar(LoginRequiredMixin, UpdateView):
+    form_class = FormCaixa
+    model = Caixa
+    template_name = 'configuracao_editar_tabela.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['nome_parametro'] = 'caixa'
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        return context 
+    
+    def form_valid(self, form, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        caixa = form.save(commit=False)
+        caixa.perfil_id = context['id_perfil_selecionado']
+        caixa.save() 
+        messages.success(self.request, 'Caixa atualizada com sucesso')
+        return redirect('investimento:config_caixa')  
+
 class ConfigurarInstituicaoFinanceira(LoginRequiredMixin, tables2.SingleTableView):
     table_class = TabelaInstituicaoFinanceira
     template_name = 'configuracao_listar_tabela.html'
@@ -101,7 +157,7 @@ class ConfigurarInstituicaoFinanceira(LoginRequiredMixin, tables2.SingleTableVie
         context = super().get_context_data(**kwargs)
         context['titulo_pagina'] = 'Instituições Financeiras Cadastradas'
         context['nome_parametro'] = 'instituição financeira'
-        context['url_insert'] = 'investimento:config_instituicao_financeira_novo'
+        context['url_insert'] ='investimento:config_instituicao_financeira_novo'
         context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         return context 
 
@@ -143,7 +199,7 @@ class ConfigurarInstituicaoFinanceiraEditar(LoginRequiredMixin, UpdateView):
         instituicao_financeira.save() 
         form.save() 
         messages.success(self.request, 'Instituição alterada com sucesso')
-        return redirect('investimento:config_instituicao_financeira')   
+        return redirect('investimento:config_instituicao_financeira') 
 
 class Imposto_brd_usa(LoginRequiredMixin, TemplateView):
     template_name = 'brd_imposto_usa.html'

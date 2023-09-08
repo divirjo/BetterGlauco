@@ -1,6 +1,8 @@
 import django_tables2 as tables
-from BetterGlauco.tabelas_formatacao import ColunaNumericaDecimal
-from .models import Ativo, InstituicaoFinanceira
+from BetterGlauco.tabelas_formatacao import ColunaNumericaDecimal, \
+                                        ColunaSomaNumericaDecimal, \
+                                        ColunaDinheiro
+from .models import Ativo, Caixa, InstituicaoFinanceira
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
 '''
@@ -25,6 +27,9 @@ CSS_PADRAO = {
                     },
                 "td":{
                     "class":"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                    },
+                "tfoot":{
+                    "class":"text-sm font-bold text-gray-900 px-6 py-4" 
                     },
                  }
 
@@ -61,6 +66,44 @@ class TabelaAtivos (tables.Table):
         attrs = CSS_PADRAO
  
  
+class Tabela_brd_dividendos_impostos(tables.Table):
+    valor_dividendo = tables.Column()
+    valor_dividendo.verbose_name = 'Dividendos recebidos (R$)'
+    
+    valor_impostos = tables.Column()
+    valor_impostos.verbose_name = 'Impostos USA estimados (R$)'
+    
+    class Meta:
+        template_name = 'tables/semantic.html'
+ 
+ 
+class TabelaCaixas(tables.Table):
+    
+    nome = tables.Column(
+                        verbose_name="Caixa", 
+                        footer='Total:')
+    
+    cota_sistema_valor = ColunaDinheiro(
+                               verbose_name="Valor cota (R$)")
+    
+    alocacao_teorica_valor = ColunaDinheiro(
+                               verbose_name="Valor alocação teórica (R$)")
+
+    alocacao_teorica_percentual = ColunaSomaNumericaDecimal(
+                               verbose_name="Percentual alocação teórica (%)")
+    
+    editar = tables.LinkColumn('investimento:config_caixa_editar',
+                               text='atualizar', 
+                               args=[tables.utils.A('pk')], 
+                               orderable=False,
+                               empty_values=(),
+                               attrs=CSS_LINK) 
+        
+    class Meta:
+        model = Caixa
+        attrs = CSS_PADRAO
+
+
 class TabelaInstituicaoFinanceira (tables.Table):
        
     editar = tables.LinkColumn('investimento:config_instituicao_financeira_editar',
@@ -75,15 +118,7 @@ class TabelaInstituicaoFinanceira (tables.Table):
         attrs = CSS_PADRAO
 
 
-class Tabela_brd_dividendos_impostos(tables.Table):
-    valor_dividendo = tables.Column()
-    valor_dividendo.verbose_name = 'Dividendos recebidos (R$)'
-    
-    valor_impostos = tables.Column()
-    valor_impostos.verbose_name = 'Impostos USA estimados (R$)'
-    
-    class Meta:
-        template_name = 'tables/semantic.html'
+
        
     
   

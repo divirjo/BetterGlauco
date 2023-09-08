@@ -9,6 +9,8 @@
         "instituicao",
         "instituicoes",
         "Numerica",
-        "PADRAO"
+        "PADRAO",
+        "rodape",
+        "tfoot"
     ]
 }

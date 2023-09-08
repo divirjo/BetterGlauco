@@ -1,6 +1,6 @@
 from typing import Any
 from django import forms
-from .models import Ativo, InstituicaoFinanceira
+from .models import Ativo, Caixa, InstituicaoFinanceira
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
 
@@ -13,6 +13,14 @@ class FormAtivo(forms.ModelForm):
             'desdobramento': forms.NumberInput(attrs={'step': 1}),
         }
 
+
+class FormCaixa(forms.ModelForm):
+    
+    class Meta:
+        model = Caixa
+        fields = '__all__'
+        exclude = ('perfil',)
+        
         
 class FormInstituicaoFinanceira(forms.ModelForm):
     
