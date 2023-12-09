@@ -8,8 +8,8 @@ python -V
 python3.9 -V
 
 echo "### Executando as migrações ###"
-python3.9 manage.py makemigrations --noinput
-python3.9 manage.py migrate --noinput
+python3.9 manage.py makemigrations 
+python3.9 manage.py migrate 
 
 echo "### Obter estatísticas...###"
-python3.9 manage.py collectstatic --noinput --clear
+python3.9 manage.py collectstatic 
