@@ -1,4 +1,4 @@
-#!/bin/bash
+
 
 # Build the project
 echo "### Instalar dependências ###"
@@ -11,5 +11,5 @@ echo "### Executando as migrações ###"
 python3.9 manage.py makemigrations 
 python3.9 manage.py migrate 
 
-echo "### Obter estatísticas...###"
+echo "### Obter arquivos estáticos ###"
 python3.9 manage.py collectstatic 
