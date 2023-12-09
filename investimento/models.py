@@ -78,12 +78,12 @@ class Ativo(models.Model):
     
 
 class AtivoPerfilCaixa(models.Model):
-    alocacao_caixa_primaria = models.ForeignKey('Caixa', 
-                                       related_name='ativos_primarios',
-                                       on_delete=models.DO_NOTHING)
-    alocacao_caixa_secundaria = models.ForeignKey('Caixa', 
-                                       related_name='ativos_secundarios',
-                                       on_delete=models.DO_NOTHING)
+    caixa_alocacao = models.ForeignKey('Caixa', 
+                                       related_name='ativos_caixa',
+                                       on_delete=models.PROTECT)
+    subclasse = models.ForeignKey('ClasseAtivo', 
+                                    related_name='ativos_subclasse',
+                                    on_delete=models.DO_NOTHING)
     ativo = models.ForeignKey('Ativo', 
                               related_name='posicoes',
                               on_delete=models.PROTECT)
@@ -111,7 +111,7 @@ class AtivoPerfilCaixa(models.Model):
 class Caixa(models.Model):
     perfil = models.ForeignKey('Perfil', 
                                related_name='caixas',
-                               on_delete=models.DO_NOTHING)
+                               on_delete=models.PROTECT)
     nome = models.CharField(max_length=100)
     cota_sistema_valor = models.DecimalField(max_digits=19, 
                        decimal_places=4, 
@@ -129,6 +129,27 @@ class Caixa(models.Model):
         """
         return self.perfil.nome + ' - ' + self.nome    
 
+
+class ClasseAtivo(models.Model):
+    perfil = models.ForeignKey('Perfil', 
+                               related_name='classes_ativo',
+                               on_delete=models.PROTECT)
+    caixa = models.ForeignKey('Caixa', 
+                                related_name='subclasses',
+                                on_delete=models.PROTECT)
+    nome = models.CharField(max_length=100)
+    alocacao_teorica_valor = models.DecimalField(max_digits=19, 
+                       decimal_places=4, 
+                       default=0)
+    alocacao_teorica_percentual = models.DecimalField(max_digits=5,
+                                decimal_places=2,
+                                default=0)
+
+    def __str__(self) -> str:
+        """
+            Altera o nome padrão de exibição do objeto da classe.
+        """
+        return self.perfil.nome + ' - ' + self.nome    
 
 
 class InstituicaoFinanceira(models.Model):
