@@ -2,6 +2,7 @@
     "cSpell.words": [
         "configuracao",
         "Configuracao",
+        "dotenv",
         "edicao",
         "flatatt",
         "formatacao",
@@ -11,7 +12,9 @@
         "Numerica",
         "PADRAO",
         "posicoes",
+        "postgresql",
         "rodape",
-        "tfoot"
+        "tfoot",
+        "vercel"
     ]
 }

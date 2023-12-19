@@ -20,7 +20,7 @@
           <p class="mb-4 text-base text-neutral-600">
             Cadastro de bancos e corretoras
           </p>
-          <a href="{% url 'investimento:config_instituicao_financeira' %}"> 
+          <a href="{% url 'invest_alocacao:config_instituicao_financeira' %}"> 
               <button
               type="button"
               class="inline-block rounded bg-neutral-700 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
@@ -41,7 +41,7 @@
         <p class="mb-4 text-base text-neutral-600">
           Cadastro das categorias de alocação dos investimentos
         </p>
-        <a href="{% url 'investimento:config_caixa' %}"> 
+        <a href="{% url 'invest_alocacao:config_caixa' %}"> 
             <button
             type="button"
             class="inline-block rounded bg-neutral-700 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
@@ -52,6 +52,28 @@
         </a>
       </div>
     </div>
+
+    <div class="max-w-xs rounded-lg bg-white shadow-lg">
+      <div class="p-6">
+        <h5
+          class="mb-2 text-xl font-medium leading-tight text-neutral-800">
+          Sub Caixas
+        </h5>
+        <p class="mb-4 text-base text-neutral-600">
+          Cadastro de classes de ativos
+        </p>
+        <a href="{% url 'invest_alocacao:config_classe_ativo' %}"> 
+            <button
+            type="button"
+            class="inline-block rounded bg-neutral-700 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+            data-te-ripple-init
+            data-te-ripple-color="light">
+            Editar classe
+            </button>
+        </a>
+      </div>
+    </div>
+
 
 </div>
 <br>
@@ -69,7 +91,7 @@
         <p class="mb-4 text-base text-neutral-600">
           Cadastro dos ativos (produtos de investimento)
         </p>
-        <a href="{% url 'investimento:config_ativos' %}"> 
+        <a href="{% url 'invest_alocacao:config_ativos' %}"> 
             <button
             type="button"
             class="inline-block rounded bg-neutral-700 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"

@@ -58,15 +58,15 @@ class Ativo(models.Model):
                             default='',
                             blank=True,
                             help_text='CNPJ do ativo')
-    # Parametrização BRDs (ativo referência e desdobramento)
+    # Parametrização BDRs (ativo referência e desdobramento)
     ticket_original = models.CharField(max_length=10,
                                        default='',
                                        blank=True,
-                                       help_text='Código de negociação original do ativo (somente BRDs)')
+                                       help_text='Código de negociação original do ativo (somente BDRs)')
     desdobramento = models.DecimalField(max_digits=15,
                                 decimal_places=10,
                                 default=0,
-                                help_text='Quanto representa a cota brasileira em relação ao ativo original (somente BRDs)')
+                                help_text='Quanto representa a cota brasileira em relação ao ativo original (somente BDRs)')
 
 
     def __str__(self) -> str:
@@ -131,9 +131,6 @@ class Caixa(models.Model):
 
 
 class ClasseAtivo(models.Model):
-    perfil = models.ForeignKey('Perfil', 
-                               related_name='classes_ativo',
-                               on_delete=models.PROTECT)
     caixa = models.ForeignKey('Caixa', 
                                 related_name='subclasses',
                                 on_delete=models.PROTECT)

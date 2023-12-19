@@ -3,10 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 import django_tables2 as tables2 
 from django.views.generic import FormView, TemplateView, UpdateView
-from .brd import BRD
-from .forms import FormAtivo, FormCaixa, FormInstituicaoFinanceira
-from .models import Ativo, Caixa, InstituicaoFinanceira
-from .tabelas import TabelaAtivos, TabelaCaixas, TabelaInstituicaoFinanceira
+from .bdr import BDR
 from BetterGlauco.parametro import Constante
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
@@ -27,182 +24,8 @@ class Ajuda(LoginRequiredMixin, TemplateView):
     template_name = 'ajuda_inicio.html'
 
 
-class ConfiguracaoMenu(LoginRequiredMixin, TemplateView):
-    template_name = 'configuracao_inicio.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        return context 
-
-
-class ConfigurarAtivo(LoginRequiredMixin, tables2.SingleTableView):
-    table_class = TabelaAtivos
-    queryset = Ativo.objects.all()
-    template_name = 'configuracao_listar_tabela.html'
-
-       
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo_pagina'] = 'Ativos Cadastrados'
-        context['nome_parametro'] = 'ativo'
-        context['url_insert'] = 'investimento:config_ativo_novo'
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        messages.warning(self.request, 'Cadastro geral. Alterações aqui afetarão todos os usuários do sistema ')
-        return context 
-
-class ConfigurarAtivoNovo(LoginRequiredMixin, FormView):
-    form_class = FormAtivo
-    template_name = 'configuracao_editar_tabela.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['nome_parametro'] = 'ativo'
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        messages.warning(self.request, 'Cadastro geral. Alterações aqui afetarão todos os usuários do sistema')
-        return context 
-    
-    def form_valid(self, form, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        form.save() # insere o item no BD
-        messages.success(self.request, 'Ativo incluído com sucesso')
-        return redirect('investimento:config_ativos')
-    
-class ConfigurarAtivoEditar(LoginRequiredMixin, UpdateView):
-    form_class = FormAtivo
-    model = Ativo
-    template_name = 'configuracao_editar_tabela.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['nome_parametro'] = 'ativo'
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        messages.warning(self.request, 'Cadastro geral. Alterações aqui afetarão todos os usuários do sistema')
-        return context 
-    
-    def form_valid(self, form, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        form.save() # insere o item no BD
-        messages.success(self.request, 'Ativo alterado com sucesso')
-        return redirect('investimento:config_ativos')
-
-class ConfigurarCaixa(LoginRequiredMixin, tables2.SingleTableView):
-    table_class = TabelaCaixas
-    template_name = 'configuracao_listar_tabela.html'
-    
-    
-    def get_queryset(self, **kwargs):
-        return Caixa.objects.filter(
-                    perfil_id = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs))
-           
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo_pagina'] = 'Caixas: Alocação por classe de ativo'
-        context['nome_parametro'] = 'caixa'
-        context['url_insert'] = 'investimento:config_caixa_novo'
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        return context 
-
-class ConfigurarCaixaNovo(LoginRequiredMixin, FormView):
-    form_class = FormCaixa
-    template_name = 'configuracao_editar_tabela.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['nome_parametro'] = 'caixa'
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        return context 
-    
-    def form_valid(self, form, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        caixa = form.save(commit=False)
-        caixa.perfil_id = context['id_perfil_selecionado']
-        caixa.save() 
-        messages.success(self.request, 'Caixa cadastrada com sucesso')
-        return redirect('investimento:config_caixa')
-    
-class ConfigurarCaixaEditar(LoginRequiredMixin, UpdateView):
-    form_class = FormCaixa
-    model = Caixa
-    template_name = 'configuracao_editar_tabela.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['nome_parametro'] = 'caixa'
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        return context 
-    
-    def form_valid(self, form, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        caixa = form.save(commit=False)
-        caixa.perfil_id = context['id_perfil_selecionado']
-        caixa.save() 
-        messages.success(self.request, 'Caixa atualizada com sucesso')
-        return redirect('investimento:config_caixa')  
-
-class ConfigurarInstituicaoFinanceira(LoginRequiredMixin, tables2.SingleTableView):
-    table_class = TabelaInstituicaoFinanceira
-    template_name = 'configuracao_listar_tabela.html'
-    
-    
-    def get_queryset(self, **kwargs):
-        return InstituicaoFinanceira.objects.filter(
-                    perfil_id = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs))
-           
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo_pagina'] = 'Instituições Financeiras Cadastradas'
-        context['nome_parametro'] = 'instituição financeira'
-        context['url_insert'] ='investimento:config_instituicao_financeira_novo'
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        return context 
-
-class ConfigurarInstituicaoFinanceiraNovo(LoginRequiredMixin, FormView):
-    form_class = FormInstituicaoFinanceira
-    template_name = 'configuracao_editar_tabela.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['nome_parametro'] = 'instituição financeira'
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        return context 
-    
-    def form_valid(self, form, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        instituicao_financeira = form.save(commit=False)
-        instituicao_financeira.perfil_id = context['id_perfil_selecionado']
-        instituicao_financeira.save() 
-        messages.success(self.request, 'Instituição incluída com sucesso')
-        return redirect('investimento:config_instituicao_financeira')
-    
-class ConfigurarInstituicaoFinanceiraEditar(LoginRequiredMixin, UpdateView):
-    form_class = FormInstituicaoFinanceira
-    model = InstituicaoFinanceira
-    template_name = 'configuracao_editar_tabela.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['nome_parametro'] = 'instituição financeira'
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        return context 
-    
-    def form_valid(self, form, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        instituicao_financeira = form.save(commit=False)
-        instituicao_financeira.perfil_id = context['id_perfil_selecionado']
-        instituicao_financeira.save() 
-        form.save() 
-        messages.success(self.request, 'Instituição alterada com sucesso')
-        return redirect('investimento:config_instituicao_financeira') 
-
-class Imposto_brd_usa(LoginRequiredMixin, TemplateView):
-    template_name = 'brd_imposto_usa.html'
+class Imposto_bdr_usa(LoginRequiredMixin, TemplateView):
+    template_name = 'bdr_imposto_usa.html'
     _CONSTANTE = Constante()
     tabela = {}
     
@@ -210,7 +33,7 @@ class Imposto_brd_usa(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs) 
         valor_dividendos = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('valor_dividendos'))
-        indice_imposto = self._CONSTANTE.BRD_IMPOSTO_DIVIDENDOS_USA()
+        indice_imposto = self._CONSTANTE.BDR_IMPOSTO_DIVIDENDOS_USA()
         
         self.tabela['Dividendos recebidos (R$)'] = valor_dividendos
         imposto_retido = valor_dividendos * indice_imposto
@@ -222,45 +45,45 @@ class Imposto_brd_usa(LoginRequiredMixin, TemplateView):
     
 class Valor_compra(LoginRequiredMixin, TemplateView):
     template_name = 'valor_compra.html'
-    calculo_brd = {'Compra':{}, 'Venda':{}}
+    calculo_bdr = {'Compra':{}, 'Venda':{}}
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs) 
-        brd_ativo = BRD(self.request, self.request.GET.get('ticket'))
-        if brd_ativo.ativo_selecionado.ticket:
-            self.monta_tabela_custos(brd_ativo)
-        context['calculo_brd'] = self.calculo_brd
+        bdr_ativo = BDR(self.request, self.request.GET.get('ticket'))
+        if bdr_ativo.ativo_selecionado.ticket:
+            self.monta_tabela_custos(bdr_ativo)
+        context['calculo_bdr'] = self.calculo_bdr
         return context
     
-    def monta_tabela_custos(self, brd):
+    def monta_tabela_custos(self, bdr):
         valor_US_digitado = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('valor_US'))       
-        brd.calcular_preco_referencia(valor_US_digitado)
-        self.gera_linha_tabela('Compra',brd)
-        self.gera_linha_tabela('Venda', brd)
+        bdr.calcular_preco_referencia(valor_US_digitado)
+        self.gera_linha_tabela('Compra',bdr)
+        self.gera_linha_tabela('Venda', bdr)
     
-    def gera_linha_tabela(self, operacao, brd):
-        valor_BR_digitado = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('valor_BRD'))
+    def gera_linha_tabela(self, operacao, bdr):
+        valor_BR_digitado = Funcoes_auxiliares.converte_numero_str(self.request.GET.get('valor_BDR'))
         
-        self.calculo_brd[operacao]['Ticket'] = brd.ativo_selecionado.ticket
-        self.calculo_brd[operacao]['USA'] = brd.ativo_selecionado.ticket_original
-        self.calculo_brd[operacao]['Desdobramento'] = int(brd.ativo_selecionado.desdobramento)
-        self.calculo_brd[operacao]['Custo BRD'] = brd.custos_brd
-        self.calculo_brd[operacao]['Preço (U$)'] = brd.ticket_original_valor_us
+        self.calculo_bdr[operacao]['Ticket'] = bdr.ativo_selecionado.ticket
+        self.calculo_bdr[operacao]['USA'] = bdr.ativo_selecionado.ticket_original
+        self.calculo_bdr[operacao]['Desdobramento'] = int(bdr.ativo_selecionado.desdobramento)
+        self.calculo_bdr[operacao]['Custo BDR'] = bdr.custos_bdr
+        self.calculo_bdr[operacao]['Preço (U$)'] = bdr.ticket_original_valor_us
         
         if operacao == 'Venda':
-            self.calculo_brd[operacao]['Dólar (R$)'] = brd.dolar_compra
-            self.calculo_brd[operacao]['Preço referência (R$)'] = '{:.2f}'.format(brd.preco_referencia_venda)
+            self.calculo_bdr[operacao]['Dólar (R$)'] = bdr.dolar_compra
+            self.calculo_bdr[operacao]['Preço referência (R$)'] = '{:.2f}'.format(bdr.preco_referencia_venda)
         else:
-            self.calculo_brd[operacao]['Dólar (R$)'] = brd.dolar_venda
-            self.calculo_brd[operacao]['Preço referência (R$)'] = '{:.2f}'.format(brd.preco_referencia_compra)
+            self.calculo_bdr[operacao]['Dólar (R$)'] = bdr.dolar_venda
+            self.calculo_bdr[operacao]['Preço referência (R$)'] = '{:.2f}'.format(bdr.preco_referencia_compra)
         
-        self.calculo_brd[operacao]['Preço atual (R$)'] = '{:.2f}'.format(valor_BR_digitado)
-        if brd.preco_referencia_compra == 0:
+        self.calculo_bdr[operacao]['Preço atual (R$)'] = '{:.2f}'.format(valor_BR_digitado)
+        if bdr.preco_referencia_compra == 0:
             spread = 0
         else:
-            spread = (valor_BR_digitado / brd.preco_referencia_compra) - 1
-        self.calculo_brd[operacao]['Spread'] = '{:.2%}'.format(spread)
+            spread = (valor_BR_digitado / bdr.preco_referencia_compra) - 1
+        self.calculo_bdr[operacao]['Spread'] = '{:.2%}'.format(spread)
     
     
 

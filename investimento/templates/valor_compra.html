@@ -10,7 +10,7 @@ Obter o valor recomendado para negociação do ativo
 <div class= "grid justify-center">
     <form method="get" action="{% url 'investimento:valor_compra' %}" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div class="form-group grid grid-cols-4 grid-rows-3 gap-x-4 gap-y-0"> 
-            <label for="ticket" class="col-start-1 row-start-1 form-label text-gray-500">Ticket do BRD</label>
+            <label for="ticket" class="col-start-1 row-start-1 form-label text-gray-500">Ticket do BDR</label>
             <input type="text" name="ticket" 
                                 value="{{ request.GET.ticket }}"  
                                 placeholder="ex: BIVB39" 
@@ -24,9 +24,9 @@ Obter o valor recomendado para negociação do ativo
                                 class= "col-start-2 row-start-2 form-control
                                         rounded-md border-2 border-gray-100 border-solid 
                                         text-black" />
-            <label for="valor_BRD" class="col-start-3 row-start-1 form-label text-gray-500">Valor BRD (R$)<sup>2</sup></label>
-            <input type="text" name="valor_BRD" 
-                                value="{{ request.GET.valor_BRD }}"  
+            <label for="valor_BDR" class="col-start-3 row-start-1 form-label text-gray-500">Valor BDR (R$)<sup>2</sup></label>
+            <input type="text" name="valor_BDR" 
+                                value="{{ request.GET.valor_BDR }}"  
                                 placeholder="ex: 0,0" 
                                 class= "col-start-3 row-start-2 form-control
                                         rounded-md border-2 border-gray-100 border-solid 
@@ -55,7 +55,7 @@ Obter o valor recomendado para negociação do ativo
           <table class="min-w-full">
             <thead class="bg-amber-900 border-b">
               <tr>
-                {% for operacao, linha in calculo_brd.items %}
+                {% for operacao, linha in calculo_bdr.items %}
                   {% if not forloop.counter0 %}
                     <th scope="col" class="text-sm font-medium text-white px-6 py-4 text-left">
                       Operação
@@ -70,7 +70,7 @@ Obter o valor recomendado para negociação do ativo
                 </tr>
               </thead>
               <tbody>
-                {% for operacao, linha in calculo_brd.items %} 
+                {% for operacao, linha in calculo_bdr.items %} 
                 <tr class="bg-gray-100 border-b">
                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {{ operacao }}

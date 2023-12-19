@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "djmoney", #configura tipo de dados money
     "django_tables2",
     "investimento",
+    "invest_alocacao",
 ]
 
 MIDDLEWARE = [

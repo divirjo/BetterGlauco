@@ -1,6 +1,6 @@
 from typing import Any
 from django import forms
-from .models import Ativo, Caixa, InstituicaoFinanceira
+from investimento.models import Ativo, Caixa, ClasseAtivo, InstituicaoFinanceira
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
 
@@ -22,6 +22,13 @@ class FormCaixa(forms.ModelForm):
         exclude = ('perfil',)
         
         
+class FormClasseAtivo(forms.ModelForm):
+    
+    class Meta:
+        model = ClasseAtivo
+        fields = '__all__'
+        exclude = ('perfil',)      
+    
 class FormInstituicaoFinanceira(forms.ModelForm):
     
     class Meta:

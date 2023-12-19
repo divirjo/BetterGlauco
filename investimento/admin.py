@@ -18,3 +18,5 @@ admin.site.register(Ativo)
 admin.site.register(AtivoPerfilCaixa)
 admin.site.register(PosicaoData)
 admin.site.register(ExtratoOperacao)
+
+

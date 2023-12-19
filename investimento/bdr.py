@@ -5,7 +5,7 @@ from .models import Ativo
 from BetterGlauco.parametro import Constante
 
 
-class BRD():
+class BDR():
     _CONSTANTE = Constante()
     
     def __init__(self, request, ticket):
@@ -14,7 +14,7 @@ class BRD():
         self.ticket_original_valor_us = 0.0
         self.preco_referencia_compra = 0.0
         self.preco_referencia_venda = 0.0
-        self.custos_brd = self._CONSTANTE.BRD_CUSTO()
+        self.custos_bdr = self._CONSTANTE.BDR_CUSTO()
         self._request = request
         
         if ticket:
@@ -87,5 +87,5 @@ class BRD():
         
     
     def get_preco_referencia(self):
-        self.preco_referencia_compra = float(self.dolar_venda) * float(self.ticket_original_valor_us) * float(self.custos_brd)  / float(self.ativo_selecionado.desdobramento)
-        self.preco_referencia_venda = float(self.dolar_compra) * float(self.ticket_original_valor_us) * float(self.custos_brd) / float(self.ativo_selecionado.desdobramento)
+        self.preco_referencia_compra = float(self.dolar_venda) * float(self.ticket_original_valor_us) * float(self.custos_bdr)  / float(self.ativo_selecionado.desdobramento)
+        self.preco_referencia_venda = float(self.dolar_compra) * float(self.ticket_original_valor_us) * float(self.custos_bdr) / float(self.ativo_selecionado.desdobramento)
