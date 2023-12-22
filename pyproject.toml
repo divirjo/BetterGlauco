@@ -19,6 +19,7 @@ django-tables2 = "^2.5.3"
 psycopg2-binary = "^2.9.6"
 protobuf = "^4.22.3"
 python-dotenv = "^1.0.0"
+django-filter = "^23.5"
 
 
 [build-system]

@@ -6,77 +6,7 @@
 
 {% block conteudo_investimentos %}
 
-<h2 class="font-semibold text-xl mt-1"> Configurações do perfil </h2>
-<p>Estas configurações afetam somente o perfil ativo</p>
-<br>
-<div class="flex flex-wrap justify-between space-x-2">
-      
-    <div class="max-w-xs rounded-lg bg-white shadow-lg">
-        <div class="p-6">
-          <h5
-            class="mb-2 text-xl font-medium leading-tight text-neutral-800">
-            Instituições Financeiras
-          </h5>
-          <p class="mb-4 text-base text-neutral-600">
-            Cadastro de bancos e corretoras
-          </p>
-          <a href="{% url 'invest_alocacao:config_instituicao_financeira' %}"> 
-              <button
-              type="button"
-              class="inline-block rounded bg-neutral-700 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
-              data-te-ripple-init
-              data-te-ripple-color="light">
-              Editar instituição
-              </button>
-          </a>
-        </div>
-      </div>
 
-    <div class="max-w-xs rounded-lg bg-white shadow-lg">
-      <div class="p-6">
-        <h5
-          class="mb-2 text-xl font-medium leading-tight text-neutral-800">
-          Caixas
-        </h5>
-        <p class="mb-4 text-base text-neutral-600">
-          Cadastro das categorias de alocação dos investimentos
-        </p>
-        <a href="{% url 'invest_alocacao:config_caixa' %}"> 
-            <button
-            type="button"
-            class="inline-block rounded bg-neutral-700 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
-            data-te-ripple-init
-            data-te-ripple-color="light">
-            Editar caixa / alocação
-            </button>
-        </a>
-      </div>
-    </div>
-
-    <div class="max-w-xs rounded-lg bg-white shadow-lg">
-      <div class="p-6">
-        <h5
-          class="mb-2 text-xl font-medium leading-tight text-neutral-800">
-          Sub Caixas
-        </h5>
-        <p class="mb-4 text-base text-neutral-600">
-          Cadastro de classes de ativos
-        </p>
-        <a href="{% url 'invest_alocacao:config_classe_ativo' %}"> 
-            <button
-            type="button"
-            class="inline-block rounded bg-neutral-700 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
-            data-te-ripple-init
-            data-te-ripple-color="light">
-            Editar classe
-            </button>
-        </a>
-      </div>
-    </div>
-
-
-</div>
-<br>
 <h2 class="font-semibold text-xl mt-1"> Configurações globais </h2>
 <p>Estas configurações afetam todos os usuários</p>
 <br>

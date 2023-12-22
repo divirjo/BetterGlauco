@@ -1,9 +1,12 @@
 from django.urls import path
-from .views import ConfiguracaoMenu, \
+from .views import InicioAlocacao, \
+                    ConfiguracaoMenu, \
                     ConfigurarAtivo, \
                     ConfigurarAtivoNovo, \
                     ConfigurarAtivoEditar, \
-                    ConfigurarCaixa, \
+                    ConfigurarAtivoAlocacao, \
+                    ConfigurarAtivoAlocacaoNovo, \
+                    ConfigurarAtivoAlocacaoEditar,              ConfigurarCaixa, \
                     ConfigurarCaixaNovo, \
                     ConfigurarCaixaEditar, \
                     ConfigurarSubCaixa, \
@@ -11,7 +14,7 @@ from .views import ConfiguracaoMenu, \
                     ConfigurarSubCaixaEditar, \
                     ConfigurarInstituicaoFinanceira, \
                     ConfigurarInstituicaoFinanceiraEditar, \
-                    ConfigurarInstituicaoFinanceiraNovo \
+                    ConfigurarInstituicaoFinanceiraNovo 
 
 
 
@@ -19,11 +22,12 @@ app_name='invest_alocacao'
 
 urlpatterns = [
     path('', 
-         ConfiguracaoMenu.as_view(), 
-         name='configuracao'),
+         InicioAlocacao.as_view(), 
+         name='inicio_alocacao'),
      path('alocacao/', 
-         ConfiguracaoMenu.as_view(), 
-         name='configuracao'),
+         InicioAlocacao.as_view(), 
+         name='inicio'),
+     
     path('config/', 
          ConfiguracaoMenu.as_view(), 
          name='configuracao'),
@@ -37,6 +41,17 @@ urlpatterns = [
     path('config/ativo/editar/<int:pk>', 
          ConfigurarAtivoEditar.as_view(), 
          name='config_ativo_editar'),
+    
+    path('config/ativo_alocacao/', 
+         ConfigurarAtivoAlocacao.as_view(), 
+         name='config_ativos_alocacao'),
+    path('config/ativo_alocacao/novo/', 
+         ConfigurarAtivoAlocacaoNovo.as_view(), 
+         name='config_ativo_alocacao_novo'),
+    path('config/ativo_alocacao/editar/<int:pk>', 
+         ConfigurarAtivoAlocacaoEditar.as_view(), 
+         name='config_ativo_alocacao_editar'),
+    
     
     path('config/caixa/', 
          ConfigurarCaixa.as_view(),

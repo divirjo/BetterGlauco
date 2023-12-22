@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "crispy_tailwind",
     "djmoney", #configura tipo de dados money
     "django_tables2",
+    "django_filters",
     "investimento",
     "invest_alocacao",
 ]

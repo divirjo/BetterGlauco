@@ -1,6 +1,10 @@
 from typing import Any
 from django import forms
-from investimento.models import Ativo, Caixa, ClasseAtivo, InstituicaoFinanceira
+from investimento.models import Ativo, \
+                                AtivoPerfilCaixa, \
+                                Caixa, \
+                                ClasseAtivo, \
+                                InstituicaoFinanceira
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
 
@@ -12,6 +16,14 @@ class FormAtivo(forms.ModelForm):
         widgets = {
             'desdobramento': forms.NumberInput(attrs={'step': 1}),
         }
+
+
+class FormAtivoPerfilCaixa(forms.ModelForm):
+    
+    class Meta:
+        model = AtivoPerfilCaixa
+        fields = '__all__'
+        exclude = ('perfil',)
 
 
 class FormCaixa(forms.ModelForm):

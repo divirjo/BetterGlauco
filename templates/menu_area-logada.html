@@ -11,12 +11,25 @@
 <nav class="row-start-2 text-sm font-semibold">
 	<ul class="list-none">
 		<li> Investimentos: </li>
-		<li></li>
-		<li>
+		<li class="font-normal">
+			<a href="{% url 'invest_alocacao:inicio_alocacao' %}"
+				class=" underline decoration-transparent 
+						hover:decoration-inherit hover:text-orange-700 transition duration-300 ease-in-out"> 
+				1. Alocação
+			</a>
+		</li>
+		<li class="font-normal">
 			<a href=""
 				class=" underline decoration-transparent 
 						hover:decoration-inherit hover:text-orange-700 transition duration-300 ease-in-out"> 
-				Atualização 
+				2. Atualização 
+			</a>
+		</li>
+		<li class="font-normal">
+			<a href=""
+				class=" underline decoration-transparent 
+						hover:decoration-inherit hover:text-orange-700 transition duration-300 ease-in-out"> 
+				3. Análise 
 			</a>
 		</li>
 		<li>
@@ -27,14 +40,14 @@
 					<a href="{% url 'investimento:valor_compra' %}" 
 						class=" underline decoration-transparent 
 								hover:decoration-inherit hover:text-orange-700 transition duration-300 ease-in-out"> 
-						Valor Compra
+						1.Valor Compra
 					</a>
 				</li>
 				<li>
 					<a href="{% url 'investimento:imposto_dividendo_bdr' %}" 
 						class=" underline decoration-transparent 
 								hover:decoration-inherit hover:text-orange-700 transition duration-300 ease-in-out"> 
-						Imposto dividendos
+						2. Imposto dividendos
 					</a>
 				</li>
 			</ul>

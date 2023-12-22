@@ -1,8 +1,13 @@
 import django_tables2 as tables
+from django.db.models import Sum
 from BetterGlauco.tabelas_formatacao import ColunaNumericaDecimal, \
                                         ColunaSomaNumericaDecimal, \
                                         ColunaDinheiro
-from .models import Ativo, Caixa, ClasseAtivo, InstituicaoFinanceira
+from .models import Ativo, \
+                    AtivoPerfilCaixa, \
+                    Caixa, \
+                    ClasseAtivo, \
+                    InstituicaoFinanceira
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
 '''
@@ -64,6 +69,30 @@ class TabelaAtivos (tables.Table):
     class Meta:
         model = Ativo
         attrs = CSS_PADRAO
+
+class TabelaAlocacaoAtivos(tables.Table):
+    
+    subclasse = tables.Column(verbose_name='Subclasse')
+    
+    ativo = tables.Column(verbose_name="Ativo")
+    
+    alocacao_teorica_valor = ColunaDinheiro(
+                               verbose_name="Valor alocação teórica (R$)")
+
+    alocacao_teorica_percentual = ColunaSomaNumericaDecimal(
+                               verbose_name="Percentual alocação teórica (%)")
+    
+    editar = tables.LinkColumn('invest_alocacao:config_ativo_alocacao_editar',
+                               text='atualizar', 
+                               args=[tables.utils.A('pk')], 
+                               orderable=False,
+                               empty_values=(),
+                               attrs=CSS_LINK) 
+    
+    
+    class Meta:
+        model = AtivoPerfilCaixa
+        attrs = CSS_PADRAO
  
  
 class Tabela_bdr_dividendos_impostos(tables.Table):
@@ -107,8 +136,8 @@ class TabelaCaixas(tables.Table):
 class TabelaClasseAtivo(tables.Table):
     
     nome = tables.Column(
-                        verbose_name="Classe Ativo", 
-                        footer='Total:')
+                        verbose_name="Classe Ativo",
+    )
     
     caixa = tables.Column(
                         verbose_name="Caixa",
@@ -120,12 +149,20 @@ class TabelaClasseAtivo(tables.Table):
     alocacao_teorica_percentual = ColunaSomaNumericaDecimal(
                                verbose_name="Percentual alocação teórica (%)")
     
+    subtotal = tables.Column(verbose_name="Subtotal")
+    
     editar = tables.LinkColumn('invest_alocacao:config_classe_ativo_editar',
                                text='atualizar', 
                                args=[tables.utils.A('pk')], 
                                orderable=False,
                                empty_values=(),
                                attrs=CSS_LINK) 
+    
+    def render_subtotal(self, record):
+        # Calcula o subtotal para cada categoria
+        subtotal = AtivoPerfilCaixa.objects.filter(caixa=self.caixa).aggregate(Sum('alocacao_teorica_percentual'))['alocacao_teorica_percentual__sum']
+        self.subtotal = subtotal
+        return subtotal
         
     class Meta:
         model = ClasseAtivo

@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from djmoney.models.fields import MoneyField
 from django.utils import timezone
 
 LISTA_OPERACOES = (
@@ -78,9 +77,6 @@ class Ativo(models.Model):
     
 
 class AtivoPerfilCaixa(models.Model):
-    caixa_alocacao = models.ForeignKey('Caixa', 
-                                       related_name='ativos_caixa',
-                                       on_delete=models.PROTECT)
     subclasse = models.ForeignKey('ClasseAtivo', 
                                     related_name='ativos_subclasse',
                                     on_delete=models.DO_NOTHING)
@@ -91,9 +87,8 @@ class AtivoPerfilCaixa(models.Model):
                                   related_name='ativos',
                                   on_delete=models.DO_NOTHING)
     # Percentual ideal de alocação do ativo
-    alocacao_teorica_valor = MoneyField(max_digits=19, 
+    alocacao_teorica_valor = models.DecimalField(max_digits=19, 
                        decimal_places=4, 
-                       default_currency='BRL',
                        default=0)
     alocacao_teorica_percentual = models.DecimalField(max_digits=5,
                                 decimal_places=2,
@@ -103,9 +98,8 @@ class AtivoPerfilCaixa(models.Model):
         """
             Altera o nome padrão de exibição do objeto da classe.
         """
-        return (self.alocacao_caixa_primaria.nome + ' - ' + 
-                self.ticket + ': ' + 
-                self.nome)     
+        return (self.subclasse.nome + ' - ' + 
+                self.ativo.ticket)     
 
 
 class Caixa(models.Model):
@@ -127,7 +121,7 @@ class Caixa(models.Model):
         """
             Altera o nome padrão de exibição do objeto da classe.
         """
-        return self.perfil.nome + ' - ' + self.nome    
+        return self.nome    
 
 
 class ClasseAtivo(models.Model):
@@ -146,7 +140,7 @@ class ClasseAtivo(models.Model):
         """
             Altera o nome padrão de exibição do objeto da classe.
         """
-        return self.perfil.nome + ' - ' + self.nome    
+        return self.caixa.nome + ' - ' + self.nome    
 
 
 class InstituicaoFinanceira(models.Model):
@@ -171,13 +165,11 @@ class ExtratoOperacao(models.Model):
                               on_delete=models.PROTECT)
     data = models.DateTimeField(default=timezone.now)
     operacao = models.CharField(max_length=10, choices=LISTA_OPERACOES)
-    valor_unitario = MoneyField(max_digits=19, 
+    valor_unitario = models.DecimalField(max_digits=19, 
                        decimal_places=4, 
-                       default_currency='BRL',
                        default=0)
-    custos_transacao = MoneyField(max_digits=19, 
+    custos_transacao = models.DecimalField(max_digits=19, 
                        decimal_places=4, 
-                       default_currency='BRL',
                        default=0)
     quantidade = models.DecimalField(max_digits=15,
                                 decimal_places=10,
@@ -209,14 +201,12 @@ class PosicaoData(models.Model):
                                 decimal_places=10,
                                 default=0)
     # valor cota do sistema
-    cota_sistema_valor = MoneyField(max_digits=19, 
+    cota_sistema_valor = models.DecimalField(max_digits=19, 
                        decimal_places=4, 
-                       default_currency='BRL',
                        default=0)
     # valor dividendos recebidos
-    dividendos = MoneyField(max_digits=19, 
+    dividendos = models.DecimalField(max_digits=19, 
                        decimal_places=4, 
-                       default_currency='BRL',
                        default=0)
 
     def __str__(self) -> str:

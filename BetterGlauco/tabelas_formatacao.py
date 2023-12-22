@@ -3,6 +3,7 @@ from django.utils.html import format_html
 import locale
 
 
+
 class ColunaNumericaDecimal(tables.Column):
     def render(self, value, column):
         if value < 0:
@@ -47,6 +48,7 @@ class ColunaSomaNumericaDecimal(tables.Column):
     
 class ColunaDinheiro(tables.Column):
     def render(self, value, column):
+        
         if value < 0:
             column.attrs = {"td":{
                                 "class":"px-6 py-4 whitespace-nowrap text-sm font-medium text-red-800 text-right"
@@ -57,6 +59,5 @@ class ColunaDinheiro(tables.Column):
                                 "class":"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right"
                                 }
                             }
-        
         locale.setlocale(locale.LC_MONETARY, 'pt_BR.UTF-8')    
         return locale.currency(value, grouping=True, symbol=None)
