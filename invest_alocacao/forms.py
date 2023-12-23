@@ -35,11 +35,12 @@ class FormCaixa(forms.ModelForm):
         
         
 class FormClasseAtivo(forms.ModelForm):
-    
+       
     class Meta:
         model = ClasseAtivo
         fields = '__all__'
-        exclude = ('perfil',)      
+        exclude = ('perfil',) 
+            
     
 class FormInstituicaoFinanceira(forms.ModelForm):
     

@@ -1,5 +1,6 @@
 from django_filters import FilterSet, ModelChoiceFilter
-from investimento.models import Caixa, ClasseAtivo
+from investimento.models import Caixa, \
+                                ClasseAtivo
 
 '''
 Documentação: https://django-filter.readthedocs.io/en/stable/ref/filterset.html

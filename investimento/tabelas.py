@@ -54,7 +54,7 @@ class TabelaAtivos (tables.Table):
                                           verbose_name="Desdobramento BDR")
     cnpj = tables.Column(verbose_name="CNPJ")
     
-    editar = tables.LinkColumn('investimento:config_ativo_editar',
+    editar = tables.LinkColumn('invest_alocacao:config_ativo_editar',
                                text='atualizar', 
                                args=[tables.utils.A('pk')], 
                                orderable=False,
@@ -79,8 +79,11 @@ class TabelaAlocacaoAtivos(tables.Table):
     alocacao_teorica_valor = ColunaDinheiro(
                                verbose_name="Valor alocação teórica (R$)")
 
-    alocacao_teorica_percentual = ColunaSomaNumericaDecimal(
-                               verbose_name="Percentual alocação teórica (%)")
+    aloc_teor_percent_caixa = ColunaSomaNumericaDecimal(
+                               verbose_name="Percentual alocação teórica (%) Caixa")
+    
+    aloc_teor_percent_carteira = ColunaSomaNumericaDecimal(
+                               verbose_name="Percentual alocação teórica (%) Carteira")
     
     editar = tables.LinkColumn('invest_alocacao:config_ativo_alocacao_editar',
                                text='atualizar', 

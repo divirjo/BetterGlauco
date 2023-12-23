@@ -90,7 +90,10 @@ class AtivoPerfilCaixa(models.Model):
     alocacao_teorica_valor = models.DecimalField(max_digits=19, 
                        decimal_places=4, 
                        default=0)
-    alocacao_teorica_percentual = models.DecimalField(max_digits=5,
+    aloc_teor_percent_caixa = models.DecimalField(max_digits=5,
+                                decimal_places=2,
+                                default=0)
+    aloc_teor_percent_carteira = models.DecimalField(max_digits=5,
                                 decimal_places=2,
                                 default=0)
     

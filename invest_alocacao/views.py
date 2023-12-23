@@ -16,10 +16,10 @@ from investimento.models import Ativo, \
                                 ClasseAtivo, \
                                 InstituicaoFinanceira
 from investimento.tabelas import TabelaAtivos, \
-                                    TabelaAlocacaoAtivos, \
                                     TabelaCaixas, \
                                     TabelaClasseAtivo, \
                                     TabelaInstituicaoFinanceira
+from .tabela_alocacao import TabelaAlocacao
 from BetterGlauco.parametro import Constante
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
@@ -30,6 +30,8 @@ class InicioAlocacao(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        tabela = TabelaAlocacao(context['id_perfil_selecionado'])
+        context['tabela'] = tabela.getTabelaAlocacaoTeorica()
         return context 
 
 class ConfiguracaoMenu(LoginRequiredMixin, TemplateView):
@@ -43,7 +45,7 @@ class ConfiguracaoMenu(LoginRequiredMixin, TemplateView):
 
 class ConfigurarAtivo(LoginRequiredMixin, tables2.SingleTableView):
     table_class = TabelaAtivos
-    queryset = Ativo.objects.all()
+    queryset = Ativo.objects.order_by('ticket','nome')
     template_name = 'configuracao_listar_tabela.html'
 
        
@@ -59,6 +61,7 @@ class ConfigurarAtivo(LoginRequiredMixin, tables2.SingleTableView):
 class ConfigurarAtivoNovo(LoginRequiredMixin, FormView):
     form_class = FormAtivo
     template_name = 'configuracao_editar_tabela.html'
+    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -94,23 +97,19 @@ class ConfigurarAtivoEditar(LoginRequiredMixin, UpdateView):
         return redirect('invest_alocacao:config_ativos')
 
 
-class ConfigurarAtivoAlocacao(LoginRequiredMixin, tables2.SingleTableView):
-    table_class = TabelaAlocacaoAtivos
-    model = InicioAlocacao
-
-    template_name = 'configuracao_listar_tabela.html'
+class ConfigurarAtivoAlocacao(LoginRequiredMixin, TemplateView):
+    template_name = 'alocacao_teorica_completa.html'
     
     
-    def get_queryset(self, **kwargs):
-        return AtivoPerfilCaixa.objects.filter(
-                    subclasse__caixa__perfil_id = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs))
-           
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo_pagina'] = 'Ativos: cadastrar alocação'
         context['nome_parametro'] = 'alocacao ativo'
         context['url_insert'] = 'invest_alocacao:config_ativo_alocacao_novo'
+        context['url_edit'] = 'invest_alocacao:config_ativo_alocacao_editar'
         context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        tabela = TabelaAlocacao(context['id_perfil_selecionado'])
+        context['tabela'] = tabela.getTabelaAlocacaoTeorica()
         return context 
 
 
@@ -124,6 +123,7 @@ class ConfigurarAtivoAlocacaoNovo(LoginRequiredMixin, FormView):
         context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         context['form'].fields['subclasse'].queryset = ClasseAtivo.objects.filter(caixa__perfil=context['id_perfil_selecionado'])
         context['form'].fields['corretora'].queryset = InstituicaoFinanceira.objects.filter(perfil=context['id_perfil_selecionado'])
+        context['form'].fields['ativo'].queryset = Ativo.objects.order_by('ticket','nome')
         return context
        
     
@@ -226,6 +226,10 @@ class ConfigurarSubCaixa(LoginRequiredMixin, tables2.SingleTableMixin, FilterVie
         fs = super().get_filterset(*args, **kwargs)
         fs.filters['caixa'].field.queryset = fs.filters['caixa'].field.queryset.filter(perfil_id=self.request.session['id_perfil_selecionado'])
         return fs
+    
+    def get_queryset(self, **kwargs):
+        return ClasseAtivo.objects.filter(
+                    caixa__perfil_id = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs))
     
     
     def get_context_data(self, **kwargs):
