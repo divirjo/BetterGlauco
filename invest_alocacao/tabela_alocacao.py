@@ -28,17 +28,18 @@ class TabelaAlocacao():
             linha_tabela = self.linha.copy()
             
             if index == 0:
-                caixa_anterior = linha_consulta.subclasse.caixa
+                caixa_anterior = linha_consulta.subclasse.caixa.nome
                 
-            if caixa_anterior != linha_consulta.subclasse.caixa:
+            if caixa_anterior != linha_consulta.subclasse.caixa.nome:
                 linha_tabela['Caixa'] = 'Total caixa'
                 linha_tabela['Alocacao Teorica Caixa(%)'] = total_alocacao_caixa
                 self.tabela_alocacao_teorica['Total Caixa'] = linha_tabela
                 total_alocacao_caixa = 0
                 linha_tabela = self.linha.copy()
-                
-            linha_tabela['Caixa'] = linha_consulta.subclasse.caixa
-            linha_tabela['Subclasse'] = linha_consulta.subclasse
+            
+            caixa_anterior = linha_consulta.subclasse.caixa.nome
+            linha_tabela['Caixa'] = linha_consulta.subclasse.caixa.nome
+            linha_tabela['Subclasse'] = linha_consulta.subclasse.nome
             linha_tabela['Ativo'] = linha_consulta.ativo
             linha_tabela['Corretora'] = linha_consulta.corretora
             if linha_consulta.alocacao_teorica_valor > 0:

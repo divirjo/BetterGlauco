@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "django_filters",
     "investimento",
     "invest_alocacao",
+    "invest_operacao",
 ]
 
 MIDDLEWARE = [
