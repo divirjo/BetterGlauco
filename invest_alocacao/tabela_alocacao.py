@@ -7,7 +7,7 @@ class TabelaAlocacao():
              'Subclasse': '',
              'Ativo': '',
              'Corretora': '',
-             'Valor Alocacao Teorica': 0,
+             'Valor Alocacao Teorica': '',
              'Alocacao Teorica Caixa(%)': 0,
              'Alocacao Teorica Carteira(%)': 0,
                  }
@@ -41,9 +41,9 @@ class TabelaAlocacao():
             linha_tabela['Subclasse'] = linha_consulta.subclasse
             linha_tabela['Ativo'] = linha_consulta.ativo
             linha_tabela['Corretora'] = linha_consulta.corretora
-            linha_tabela['Valor Alocacao Teorica'] = linha_consulta.alocacao_teorica_valor
+            if linha_consulta.alocacao_teorica_valor > 0:
+                linha_tabela['Valor Alocacao Teorica'] = linha_consulta.alocacao_teorica_valor
             linha_tabela['Alocacao Teorica Caixa(%)'] = linha_consulta.aloc_teor_percent_caixa
-            
             total_alocacao_caixa += linha_consulta.aloc_teor_percent_caixa
             linha_tabela['Alocacao Teorica Carteira(%)'] = linha_consulta.aloc_teor_percent_carteira
             total_alocacao_carteira += linha_consulta.aloc_teor_percent_carteira
