@@ -4,7 +4,9 @@ from django.utils import timezone
 
 LISTA_OPERACOES = (
     ('VENDA', 'Venda'),
-    ('COMPRA', 'Compra')
+    ('COMPRA', 'Compra'),
+    ('SUBSCRIÇÃO', 'Subscrição'),
+    ('DESDOBRO', 'Desdobro')
 )
 
 

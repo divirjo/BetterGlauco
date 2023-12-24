@@ -5,8 +5,8 @@ from django.views.generic import FormView, TemplateView, UpdateView
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
 
-class InicioOperacao(LoginRequiredMixin, TemplateView):
-    template_name = 'operacao_inicio.html'
+class InicioAtualizacao(LoginRequiredMixin, TemplateView):
+    template_name = 'atualizacao_inicio.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
