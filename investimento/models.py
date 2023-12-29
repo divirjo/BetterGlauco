@@ -104,7 +104,8 @@ class AtivoPerfilCaixa(models.Model):
             Altera o nome padrão de exibição do objeto da classe.
         """
         return (self.subclasse.nome + ' - ' + 
-                self.ativo.ticket)     
+                self.ativo.ticket + ' - ' + 
+                self.ativo.nome)     
 
 
 class Caixa(models.Model):
@@ -176,9 +177,13 @@ class ExtratoOperacao(models.Model):
     custos_transacao = models.DecimalField(max_digits=19, 
                        decimal_places=4, 
                        default=0)
+    ir_fonte = models.DecimalField(max_digits=19, 
+                       decimal_places=4, 
+                       default=0)
     quantidade = models.DecimalField(max_digits=15,
                                 decimal_places=10,
                                 default=0)
+    
     
     def __str__(self) -> str:
         """
@@ -187,6 +192,13 @@ class ExtratoOperacao(models.Model):
         return (self.ativo_perfil_caixa.alocacao_caixa_primaria.perfil.nome + ' - ' + 
                 self.ativo_perfil_caixa.ativo.ticket + ': ' + 
                 self.data.strftime(f"%Y-%m-%d"))    
+
+
+    def total(self):
+        if self.operacao == 'VENDA' or 'Venda':
+            return self.quantidade * (self.valor_unitario - self.custos_transacao)
+        else:
+            return self.quantidade * (self.valor_unitario + self.custos_transacao)
 
 
 class PosicaoData(models.Model):

@@ -5,8 +5,6 @@ from investimento.models import Ativo, \
                                 Caixa, \
                                 ClasseAtivo, \
                                 InstituicaoFinanceira
-from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
-
 
 class FormAtivo(forms.ModelForm):
     

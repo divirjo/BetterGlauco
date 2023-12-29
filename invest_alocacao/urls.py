@@ -24,9 +24,6 @@ urlpatterns = [
     path('', 
          InicioAlocacao.as_view(), 
          name='inicio_alocacao'),
-     path('alocacao/', 
-         InicioAlocacao.as_view(), 
-         name='inicio'),
      
     path('config/', 
          ConfiguracaoMenu.as_view(), 

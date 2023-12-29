@@ -1,4 +1,5 @@
 import django_tables2 as tables
+from django_tables2.utils import A
 from django.db.models import Sum
 from BetterGlauco.tabelas_formatacao import ColunaNumericaDecimal, \
                                         ColunaSomaNumericaDecimal, \
@@ -7,7 +8,9 @@ from .models import Ativo, \
                     AtivoPerfilCaixa, \
                     Caixa, \
                     ClasseAtivo, \
-                    InstituicaoFinanceira
+                    InstituicaoFinanceira, \
+                    ExtratoOperacao \
+                        
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
 '''
@@ -171,7 +174,7 @@ class TabelaClasseAtivo(tables.Table):
         model = ClasseAtivo
         attrs = CSS_PADRAO
 
-class TabelaInstituicaoFinanceira (tables.Table):
+class TabelaInstituicaoFinanceira(tables.Table):
        
     editar = tables.LinkColumn('invest_alocacao:config_instituicao_financeira_editar',
                                text='atualizar', 
@@ -185,7 +188,50 @@ class TabelaInstituicaoFinanceira (tables.Table):
         attrs = CSS_PADRAO
 
 
-
+class TabelaExtratoOperacoes(tables.Table):
        
+    editar = tables.LinkColumn('invest_operacao:operacao_individual_editar',
+                               text='atualizar', 
+                               args=[tables.utils.A('pk')], 
+                               orderable=False,
+                               empty_values=(),
+                               attrs=CSS_LINK) 
+    total = tables.Column(accessor=A('total'), verbose_name="Total (R$)")
     
-  
+    class Meta:
+        model = ExtratoOperacao
+        attrs = CSS_PADRAO
+        fields = ('ativo_perfil_caixa', 
+                    'data',
+                    'operacao',
+                    'quantidade',
+                    'valor_unitario',
+                    'custos_transacao',
+                    'ir_fonte')
+        sequence = ('ativo_perfil_caixa', 
+                    'data',
+                    'operacao',
+                    'quantidade',
+                    'valor_unitario',
+                    'custos_transacao',
+                    'total',
+                    'ir_fonte',
+                    'editar')
+       
+
+    def render_ir_fonte(self, value, column):
+        column.attrs.update({"td":{'class':"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right"}})
+        return '{:0.2f}'.format(value)       
+    
+    def render_quantidade(self, value, column):
+        column.attrs.update({"td":{'class':"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right"}})
+        return '{:0.2f}'.format(value)
+    
+    def render_total(self, value, column):
+        column.attrs.update({"td":{'class':"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right"}})
+        return '{:0.2f}'.format(value)
+    
+    def render_valor_unitario(self, value, column):
+        column.attrs.update({"td":{'class':"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right"}})
+        return '{:0.2f}'.format(value)
+

@@ -11,14 +11,21 @@
         "flatatt",
         "formatacao",
         "Funcoes",
+        "historico",
         "instituicao",
         "instituicoes",
         "Numerica",
+        "operacoes",
+        "Operacoes",
         "PADRAO",
+        "paginators",
+        "Posicao",
         "posicoes",
         "postgresql",
         "rodape",
         "tfoot",
+        "transacao",
+        "unitario",
         "vercel"
     ]
 }
