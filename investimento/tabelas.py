@@ -3,7 +3,8 @@ from django_tables2.utils import A
 from django.db.models import Sum
 from BetterGlauco.tabelas_formatacao import ColunaNumericaDecimal, \
                                         ColunaSomaNumericaDecimal, \
-                                        ColunaDinheiro
+                                        ColunaDinheiro, \
+                                        ParametrosTabelas
 from .models import Ativo, \
                     AtivoPerfilCaixa, \
                     Caixa, \
@@ -23,32 +24,7 @@ https://django-tables2.readthedocs.io/
 
 '''
 
-CSS_PADRAO = {
-                "table":{
-                    "class":"min-w-full"
-                },
-                "thead":{
-                    "class":"bg-amber-900 border-b"
-                    },
-                "th":{
-                    "class":"text-sm font-medium text-white px-6 py-4 text-left"
-                    },
-                "td":{
-                    "class":"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                    },
-                "tfoot":{
-                    "class":"text-sm font-bold text-gray-900 px-6 py-4" 
-                    },
-                 }
 
-CSS_LINK = {
-                "td":{
-                    "class":"text-center text-dark font-medium text-base py-3 px-2" 
-                    },
-                "a":{
-                    "class":"border border-amber-900 rounded-md py-1 px-4 text-amber-900 inline-block rounded hover:bg-amber-900 hover:text-white" 
-                    },
-                 }
 
 
 class TabelaAtivos (tables.Table):
@@ -62,7 +38,7 @@ class TabelaAtivos (tables.Table):
                                args=[tables.utils.A('pk')], 
                                orderable=False,
                                empty_values=(),
-                               attrs=CSS_LINK) 
+                               attrs=ParametrosTabelas.CSS_LINK) 
     
 
 #    def render_desdobramento(self, value, column):
@@ -71,7 +47,7 @@ class TabelaAtivos (tables.Table):
     
     class Meta:
         model = Ativo
-        attrs = CSS_PADRAO
+        attrs = ParametrosTabelas.CSS_PADRAO
 
 class TabelaAlocacaoAtivos(tables.Table):
     
@@ -93,12 +69,12 @@ class TabelaAlocacaoAtivos(tables.Table):
                                args=[tables.utils.A('pk')], 
                                orderable=False,
                                empty_values=(),
-                               attrs=CSS_LINK) 
+                               attrs=ParametrosTabelas.CSS_LINK) 
     
     
     class Meta:
         model = AtivoPerfilCaixa
-        attrs = CSS_PADRAO
+        attrs = ParametrosTabelas.CSS_PADRAO
  
  
 class Tabela_bdr_dividendos_impostos(tables.Table):
@@ -132,11 +108,11 @@ class TabelaCaixas(tables.Table):
                                args=[tables.utils.A('pk')], 
                                orderable=False,
                                empty_values=(),
-                               attrs=CSS_LINK) 
+                               attrs=ParametrosTabelas.CSS_LINK) 
         
     class Meta:
         model = Caixa
-        attrs = CSS_PADRAO
+        attrs = ParametrosTabelas.CSS_PADRAO
 
 
 class TabelaClasseAtivo(tables.Table):
@@ -162,7 +138,7 @@ class TabelaClasseAtivo(tables.Table):
                                args=[tables.utils.A('pk')], 
                                orderable=False,
                                empty_values=(),
-                               attrs=CSS_LINK) 
+                               attrs=ParametrosTabelas.CSS_LINK) 
     
     def render_subtotal(self, record):
         # Calcula o subtotal para cada categoria
@@ -172,7 +148,7 @@ class TabelaClasseAtivo(tables.Table):
         
     class Meta:
         model = ClasseAtivo
-        attrs = CSS_PADRAO
+        attrs = ParametrosTabelas.CSS_PADRAO
 
 class TabelaInstituicaoFinanceira(tables.Table):
        
@@ -181,57 +157,8 @@ class TabelaInstituicaoFinanceira(tables.Table):
                                args=[tables.utils.A('pk')], 
                                orderable=False,
                                empty_values=(),
-                               attrs=CSS_LINK) 
+                               attrs=ParametrosTabelas.CSS_LINK) 
     
     class Meta:
         model = InstituicaoFinanceira
-        attrs = CSS_PADRAO
-
-
-class TabelaExtratoOperacoes(tables.Table):
-       
-    editar = tables.LinkColumn('invest_operacao:operacao_individual_editar',
-                               text='atualizar', 
-                               args=[tables.utils.A('pk')], 
-                               orderable=False,
-                               empty_values=(),
-                               attrs=CSS_LINK) 
-    total = tables.Column(accessor=A('total'), verbose_name="Total (R$)")
-    
-    class Meta:
-        model = ExtratoOperacao
-        attrs = CSS_PADRAO
-        fields = ('ativo_perfil_caixa', 
-                    'data',
-                    'operacao',
-                    'quantidade',
-                    'valor_unitario',
-                    'custos_transacao',
-                    'ir_fonte')
-        sequence = ('ativo_perfil_caixa', 
-                    'data',
-                    'operacao',
-                    'quantidade',
-                    'valor_unitario',
-                    'custos_transacao',
-                    'total',
-                    'ir_fonte',
-                    'editar')
-       
-
-    def render_ir_fonte(self, value, column):
-        column.attrs.update({"td":{'class':"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right"}})
-        return '{:0.2f}'.format(value)       
-    
-    def render_quantidade(self, value, column):
-        column.attrs.update({"td":{'class':"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right"}})
-        return '{:0.2f}'.format(value)
-    
-    def render_total(self, value, column):
-        column.attrs.update({"td":{'class':"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right"}})
-        return '{:0.2f}'.format(value)
-    
-    def render_valor_unitario(self, value, column):
-        column.attrs.update({"td":{'class':"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right"}})
-        return '{:0.2f}'.format(value)
-
+        attrs = ParametrosTabelas.CSS_PADRAO

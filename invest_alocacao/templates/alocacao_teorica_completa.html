@@ -40,7 +40,7 @@
                 </tr>
               </thead>
               <tbody>
-            {% elif id_linha == 'Total' or id_linha == 'Total Caixa' %}
+            {% elif  'Total' in id_linha %}
                   {% if forloop.counter|divisibleby:2 %}
                     <tr class="bg-gray-100 border-b">
                   {% else %}

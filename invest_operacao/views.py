@@ -7,9 +7,10 @@ from django.shortcuts import redirect, render
 from django.views.generic import FormView, TemplateView, UpdateView
 from .filtros_operacoes import FiltroOperacaoAtivo
 from .forms_operacoes import FormExtratoOperacao
+from .tabelas import TabelaExtratoOperacoes
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 from investimento.models import AtivoPerfilCaixa, ExtratoOperacao
-from investimento.tabelas import TabelaExtratoOperacoes
+
 
 class InicioOperacao(LoginRequiredMixin, tables2.SingleTableView):
     paginator_class = LazyPaginator
@@ -26,6 +27,11 @@ class InicioOperacao(LoginRequiredMixin, tables2.SingleTableView):
         context = super().get_context_data(**kwargs)
         context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         return context 
+   
+   
+class RegistraNotaCorretagem(LoginRequiredMixin, tables2.SingleTableView):
+    template_name = 'registrar_nota_corretagem'
+    
     
 
 class OperacaoIndividual(LoginRequiredMixin, tables2.SingleTableMixin, FilterView):
@@ -99,3 +105,6 @@ class OperacaoIndividualEditar(LoginRequiredMixin, UpdateView):
         operacao.save() 
         messages.success(self.request, 'Operação de {} atualizada com sucesso'.format(form.cleaned_data['operacao']))
         return redirect('invest_operacao:operacao_individual')   
+    
+    
+    

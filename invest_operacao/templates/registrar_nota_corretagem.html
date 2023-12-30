@@ -1,0 +1,24 @@
+{% extends 'modelo_investimentos.html' %}
+{% load crispy_forms_tags %}
+
+{% block titulo_pagina %}
+    {% if form.instance.pk %}
+            Atualizar {{ nome_parametro }}
+    {% else %}
+            Cadastrar {{ nome_parametro }}
+    {% endif %}
+{% endblock %}
+
+{% block conteudo_investimentos %}
+
+<div class= "grid justify-center">
+    <form action="" method="post">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            {{form|crispy}}
+        </fieldset>
+        <button class="bg-amber-900 w-full rounded-md text-white text-lg" type="submit">Salvar</button>
+    </form>
+</div>
+
+{% endblock %}

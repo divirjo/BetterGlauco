@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import InicioOperacao, \
+                    RegistraNotaCorretagem, \
                     OperacaoIndividual, \
                     OperacaoIndividualNova, \
                     OperacaoIndividualEditar \
@@ -12,6 +13,9 @@ urlpatterns = [
          InicioOperacao.as_view(), 
          name='inicio_operacao'),
      
+     path('nota_corretora/', 
+         RegistraNotaCorretagem.as_view(), 
+         name='nota_corretagem'),
      
      path('individual/', 
          OperacaoIndividual.as_view(), 

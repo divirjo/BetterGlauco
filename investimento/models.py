@@ -74,7 +74,11 @@ class Ativo(models.Model):
         """
             Altera o nome padrão de exibição do objeto da classe.
         """
-        return (self.ticket + ': ' + 
+        
+        if self.ticket == '':
+            return self.nome
+        else:
+            return (self.ticket + ': ' + 
                 self.nome)   
     
 
@@ -103,7 +107,12 @@ class AtivoPerfilCaixa(models.Model):
         """
             Altera o nome padrão de exibição do objeto da classe.
         """
-        return (self.subclasse.nome + ' - ' + 
+        
+        if self.ativo.ticket == '':
+            return (self.subclasseNome + ' - ' + 
+                    self.ativoNome)
+        else:
+            return (self.subclasse.nome + ' - ' + 
                 self.ativo.ticket + ' - ' + 
                 self.ativo.nome)     
 
@@ -113,6 +122,9 @@ class Caixa(models.Model):
                                related_name='caixas',
                                on_delete=models.PROTECT)
     nome = models.CharField(max_length=100)
+    
+    ordem_exibicao = models.IntegerField(default=0)
+    
     cota_sistema_valor = models.DecimalField(max_digits=19, 
                        decimal_places=4, 
                        default=0)

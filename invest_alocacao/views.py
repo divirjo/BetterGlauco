@@ -166,7 +166,7 @@ class ConfigurarCaixa(LoginRequiredMixin, tables2.SingleTableView):
     
     def get_queryset(self, **kwargs):
         return Caixa.objects.filter(
-                    perfil_id = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs))
+                    perfil_id = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)).order_by('ordem_exibicao','nome')
            
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -224,12 +224,12 @@ class ConfigurarSubCaixa(LoginRequiredMixin, tables2.SingleTableMixin, FilterVie
     
     def get_filterset(self, *args, **kwargs):
         fs = super().get_filterset(*args, **kwargs)
-        fs.filters['caixa'].field.queryset = fs.filters['caixa'].field.queryset.filter(perfil_id=self.request.session['id_perfil_selecionado'])
+        fs.filters['caixa'].field.queryset = fs.filters['caixa'].field.queryset.filter(perfil_id=self.request.session['id_perfil_selecionado']).order_by('ordem_exibicao','nome')
         return fs
     
     def get_queryset(self, **kwargs):
         return ClasseAtivo.objects.filter(
-                    caixa__perfil_id = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs))
+                    caixa__perfil_id = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)).order_by('caixa__ordem_exibicao','caixa__nome','nome')
     
     
     def get_context_data(self, **kwargs):
@@ -294,7 +294,7 @@ class ConfigurarInstituicaoFinanceira(LoginRequiredMixin, tables2.SingleTableVie
     
     def get_queryset(self, **kwargs):
         return InstituicaoFinanceira.objects.filter(
-                    perfil_id = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs))
+                    perfil_id = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)).order_by('nome')
            
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
