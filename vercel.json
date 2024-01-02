@@ -5,6 +5,7 @@
         {
             "src": "BetterGlauco/wsgi.py",
             "use": "@vercel/python",
+            "maxDuration": 20,
             "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
         },
         {
@@ -24,10 +25,5 @@
           "src": "/(.*)",
           "dest": "BetterGlauco/wsgi.py"
         }
-      ],
-    "functions": {
-        "app/api/**/*": {
-          "maxDuration": 20 
-        }
-      }
+      ]
 }
