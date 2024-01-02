@@ -1,7 +1,6 @@
 {
     "version": 2,
     "name": "vercel_build_staticfiles",
-    "regions": ["sa-east-1"],
     "builds": [
         {
             "src": "BetterGlauco/wsgi.py",
