@@ -25,5 +25,9 @@
           "src": "/(.*)",
           "dest": "BetterGlauco/wsgi.py"
         }
-      ]
+      ],
+    "functions": {
+        "app/api/**/*": {
+          "maxDuration": 20 
+        }
 }
