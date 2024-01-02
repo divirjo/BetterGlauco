@@ -138,7 +138,7 @@ class RegistraNotaCorretagem(LoginRequiredMixin, TemplateView):
     
     def envia_dados_formulario(self):
         ativo_perfil_caixa_id = 10
-        operacao = 'VENDA'
+        operacao = 'COMPRA'
         quantidade = 2
         valor_unitario = 100.60
 
