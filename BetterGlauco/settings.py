@@ -86,8 +86,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "BetterGlauco.wsgi.application"
-
+#WSGI_APPLICATION = "BetterGlauco.wsgi.application"
+WSGI_APPLICATION = "BetterGlauco.wsgi.app"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

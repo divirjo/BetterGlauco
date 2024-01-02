@@ -94,3 +94,32 @@ class ColunaDinheiro(tables.Column):
                             }
         locale.setlocale(locale.LC_MONETARY, 'pt_BR.UTF-8')    
         return locale.currency(value, grouping=True, symbol=None)
+    
+    
+class ColunaSomaDinheiro(tables.Column):
+    def render(self, value, column):
+        if value < 0:
+            column.attrs = {"td":{
+                                "class":"px-6 py-4 whitespace-nowrap text-sm font-medium text-red-800 text-right"
+                                },
+                            "tf":{
+                                "class":"px-6 py-4 text-right"
+                                }
+                            }
+        else:
+            column.attrs = {"td":{
+                                "class":"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right"
+                                },
+                            "tf":{
+                                "class":"px-6 py-4 text-right"
+                                }
+                            }
+            
+        locale.setlocale(locale.LC_MONETARY, 'pt_BR.UTF-8')    
+        return locale.currency(value, grouping=True, symbol=None)
+    
+    def render_footer(self, bound_column, table):
+        
+        locale.setlocale(locale.LC_MONETARY, 'pt_BR.UTF-8')    
+        return locale.currency(sum(bound_column.accessor.resolve(linha) 
+                    for linha in table.data),grouping=True, symbol=None)

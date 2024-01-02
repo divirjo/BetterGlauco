@@ -2,23 +2,113 @@
 {% load crispy_forms_tags %}
 
 {% block titulo_pagina %}
-    {% if form.instance.pk %}
-            Atualizar {{ nome_parametro }}
-    {% else %}
-            Cadastrar {{ nome_parametro }}
-    {% endif %}
+    {{ titulo_pagina }}
 {% endblock %}
 
 {% block conteudo_investimentos %}
 
 <div class= "grid justify-center">
-    <form action="" method="post">
-        {% csrf_token %}
-        <fieldset class="form-group">
-            {{form|crispy}}
-        </fieldset>
-        <button class="bg-amber-900 w-full rounded-md text-white text-lg" type="submit">Salvar</button>
+    <form method="get" action="{% url 'invest_operacao:nota_corretagem' %}" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div class="form-group grid grid-cols-4 grid-rows-3 gap-x-4 gap-y-0"> 
+            <label for="data" class="col-start-1 row-start-1 form-label text-gray-500">Data operação</label>
+            <input type="date" name="data" 
+                                value="{{ data|date:'Y-m-d' }}"  
+                                placeholder="data da nota" 
+                                class= "col-start-1 row-start-2 form-control
+                                        rounded-md border-2 border-gray-100 border-solid 
+                                        text-black" />
+            <label for="total_custos" class="col-start-2 row-start-1 form-label text-gray-500">Total custos </label>
+            <input type="number" name="total_custos" 
+                                value="{{ total_custos }}"  
+                                step = "0.01"
+                                placeholder="ex: 0,0" 
+                                class= "col-start-2 row-start-2 form-control
+                                        rounded-md border-2 border-gray-100 border-solid 
+                                        text-black" />
+            <label for="ir_fonte" class="col-start-3 row-start-1 form-label text-gray-500">IR Fonte (R$)</label>
+            <input type="number" name="ir_fonte" 
+                                value="{{ ir_fonte }}"  
+                                step = "0.01"
+                                placeholder="ex: 0,0" 
+                                class= "col-start-3 row-start-2 form-control
+                                        rounded-md border-2 border-gray-100 border-solid 
+                                        text-black" />          
+            <button type="submit" class="col-start-4 row-start-2 form-check 
+                                        bg-amber-900 w-full mx-4 rounded-md
+                                        text-white text-lg" 
+                                  value="Click" 
+                                  name="atualizar_nota">
+                Atualizar
+            </button>
+            <button type="submit" class="col-start-4 row-start-4 form-check 
+            bg-amber-900 w-full mx-4 rounded-md
+            text-white text-lg" 
+                                  value="Click" 
+                                  name="salvar">
+                Salvar nota
+            </button>
+
+        </div>
     </form>
+</div>
+
+<div class= "grid justify-center">
+  <form method="get" action="{% url 'invest_operacao:nota_corretagem' %}" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      < class="form-group grid grid-cols-4 grid-rows-3 gap-x-4 gap-y-0"> 
+          <label for="operacao" class="col-start-1 row-start-1 form-label text-gray-500">Operação</label>
+          <select name="operacao" 
+                  class= "col-start-1 row-start-2 form-control
+                          rounded-md border-2 border-gray-100 border-solid 
+                          text-black" >
+            {% for operacao in operacoes %}
+            {%endfor%}
+          </select>
+          <label for="quantidade" class="col-start-2 row-start-1 form-label text-gray-500">Quantidade</label>
+          <input type="number" name="quantidade" 
+                              value="{{ quantidade }}" 
+                              step = "0.0001"  
+                              placeholder="ex: 0,0" 
+                              class= "col-start-2 row-start-2 form-control
+                                      rounded-md border-2 border-gray-100 border-solid 
+                                      text-black" />
+          <label for="valor_unitario" class="col-start-3 row-start-1 form-label text-gray-500">Valor unitário (R$)</label>
+          <input type="number" name="valor_unitario" 
+                              value="{{ valor_unitario }}"
+                              step = "0.01"  
+                              placeholder="ex: 0,0" 
+                              class= "col-start-3 row-start-2 form-control
+                                      rounded-md border-2 border-gray-100 border-solid 
+                                      text-black" />            
+          <button type="submit" class="col-start-4 row-start-2 form-check 
+                                      bg-amber-900 w-full mx-4 rounded-md
+                                      text-white text-lg" 
+                                value="Click" 
+                                name="incluirAtivo">
+              Incluir
+          </button>
+      </div>
+  </form>
+</div>
+
+
+{% load django_tables2 %}
+{% render_table table %}
+
+ 
+
+
+<div class= "grid justify-center">
+  <form method="get" action="{% url 'invest_operacao:nota_corretagem' %}" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <div class="form-group grid grid-cols-1 grid-rows-1 gap-x-0 gap-y-0"> 
+        <button type="submit" class="col-start-4 row-start-1 form-check 
+        bg-amber-900 w-full mx-4 rounded-md
+        text-white text-lg" 
+                value="Click" 
+                name="novaNota">
+                    Cadastrar nova nota
+        </button> 
+      </div>
+  </form>
 </div>
 
 {% endblock %}

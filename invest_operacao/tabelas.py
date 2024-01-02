@@ -6,6 +6,7 @@ from BetterGlauco.tabelas_formatacao import ColunaData, \
                                         ColunaNumericaDecimal, \
                                         ColunaSomaNumericaDecimal, \
                                         ColunaDinheiro, \
+                                        ColunaSomaDinheiro, \
                                         ParametrosTabelas
                                         
                                         
@@ -56,3 +57,41 @@ class TabelaExtratoOperacoes(tables.Table):
                     'total',
                     'ir_fonte',
                     'editar')
+        
+class tabelaNotaCorretagem(tables.Table):
+        
+        id = tables.Column(verbose_name="id", 
+                        footer='Total:')
+        
+        ativo_perfil_caixa_id = tables.Column(verbose_name="ID Ativo Perfil", 
+                        footer='Total:')
+    
+        ativo_ticket = tables.Column()
+        
+        ativo_nome = tables.Column()
+        
+        data = ColunaData()
+    
+        operacao = tables.Column(verbose_name='Operação')
+
+        quantidade = ColunaSomaNumericaDecimal()
+        
+        custo_unitario_transacao = ColunaDinheiro(verbose_name="Custos transação (R$)")
+    
+        valor_unitario = ColunaDinheiro(verbose_name="Valor unitário (R$)")
+
+        total = ColunaSomaDinheiro(verbose_name="Total (R$)")
+    
+        ir_fonte = ColunaDinheiro(verbose_name="IR fonte (R$)")
+     
+        editar = tables.LinkColumn('invest_operacao:nota_corretagem',
+                               text='atualizar', 
+                               args=[tables.utils.A('id')], 
+                               orderable=False,
+                               empty_values=(),
+                               attrs=ParametrosTabelas.CSS_LINK) 
+
+        class Meta:
+            attrs = ParametrosTabelas.CSS_PADRAO
+            
+    

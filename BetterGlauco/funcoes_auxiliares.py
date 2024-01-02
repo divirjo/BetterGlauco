@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 class Funcoes_auxiliares():
     '''
     Classe de funções auxiliares, não possui um objeto a ser construído, em razão disso não há o parâmetro self nas declarações dos métodos.
@@ -27,7 +29,7 @@ class Funcoes_auxiliares():
             pass
         
         try:
-            return float(numero_str)
+            return Decimal(numero_str)
         except:
             return 0
         

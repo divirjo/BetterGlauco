@@ -139,13 +139,13 @@ class TabelaClasseAtivo(tables.Table):
                                orderable=False,
                                empty_values=(),
                                attrs=ParametrosTabelas.CSS_LINK) 
-    
+    '''
     def render_subtotal(self, record):
         # Calcula o subtotal para cada categoria
         subtotal = AtivoPerfilCaixa.objects.filter(caixa=self.caixa).aggregate(Sum('alocacao_teorica_percentual'))['alocacao_teorica_percentual__sum']
         self.subtotal = subtotal
         return subtotal
-        
+    '''    
     class Meta:
         model = ClasseAtivo
         attrs = ParametrosTabelas.CSS_PADRAO
