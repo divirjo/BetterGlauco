@@ -2,8 +2,7 @@
 
 # Build the project
 echo "### Instalar dependências ###"
-apt-get update
-apt-get install python3-brlapi
+install python3-brlapi
 python3.9 -m pip install --upgrade pip
 python3.9 -m pip install -r requirements.txt
 python -V
