@@ -2,8 +2,10 @@
     "cSpell.words": [
         "aloc",
         "atualizacao",
+        "botao",
         "configuracao",
         "Configuracao",
+        "cotacao",
         "descricao",
         "dotenv",
         "edicao",
@@ -27,6 +29,7 @@
         "posicoes",
         "postgresql",
         "rodape",
+        "SCRAPERLINK",
         "tfoot",
         "transacao",
         "unitario",

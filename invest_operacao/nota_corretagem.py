@@ -1,11 +1,15 @@
 from datetime import datetime
 from decimal import Decimal
 import pandas as pd
-from investimento.models import ExtratoOperacao, LISTA_OPERACOES
+from investimento.models import AtivoPerfilCaixa, \
+                                ExtratoOperacao, \
+                                LISTA_OPERACOES
 
 class registrar_nota_corretagem():
     
     _id = 0
+    
+    id_linha_selecionada = -1
     
     _total_custos = 0
     
@@ -92,6 +96,24 @@ class registrar_nota_corretagem():
             ir_transacao = subtotal_operacao_sem_custos /  total_vendas * self._ir_fonte
 
             self._df_nota_corretagem.at[indice,'ir_fonte'] = Decimal(ir_transacao)
+    
+    
+    def alterar_ativo_nota(self, ativo_perfil_caixa_id, operacao, quantidade, valor_unitario):
+        
+            
+        self._df_nota_corretagem.at[self.id_linha_selecionada,'ativo_perfil_caixa_id'] = ativo_perfil_caixa_id
+        
+        ativo_selecionado = AtivoPerfilCaixa.objects.filter(id=ativo_perfil_caixa_id).values('ativo__ticket', 'ativo__nome')
+        
+        self._df_nota_corretagem.at[self.id_linha_selecionada,'ativo_ticket'] = ativo_selecionado[0]['ativo__ticket']
+        self._df_nota_corretagem.at[self.id_linha_selecionada,'ativo_nome'] = ativo_selecionado[0]['ativo__nome']
+        
+        self._df_nota_corretagem.at[self.id_linha_selecionada,'data'] = self._data
+        self._df_nota_corretagem.at[self.id_linha_selecionada,'operacao'] = operacao
+        self._df_nota_corretagem.at[self.id_linha_selecionada,'quantidade'] =Decimal(quantidade)
+        self._df_nota_corretagem.at[self.id_linha_selecionada,'valor_unitario'] = Decimal(valor_unitario)
+        
+        self.distribuir_custos_nota()
         
     
     def incluir_ativo_nota(self, ativo_perfil_caixa_id, operacao, quantidade, valor_unitario):
@@ -100,11 +122,13 @@ class registrar_nota_corretagem():
         
         nova_linha['id'] = self._id
         self._id += 1
-        
+            
         nova_linha['ativo_perfil_caixa_id'] = ativo_perfil_caixa_id
         
-        nova_linha['ativo_ticket'] = 'TESTE11'
-        nova_linha['ativo_nome'] = 'Teste teste'
+        ativo_selecionado = AtivoPerfilCaixa.objects.filter(id=ativo_perfil_caixa_id).values('ativo__ticket', 'ativo__nome')
+        
+        nova_linha['ativo_ticket'] = ativo_selecionado[0]['ativo__ticket']
+        nova_linha['ativo_nome'] = ativo_selecionado[0]['ativo__nome']
         
         nova_linha['data'] = self._data
         nova_linha['operacao'] = operacao
