@@ -72,10 +72,10 @@ class Valor_compra(LoginRequiredMixin, TemplateView):
         self.calculo_bdr[operacao]['Preço (U$)'] = bdr.ticket_original_valor_us
         
         if operacao == 'Venda':
-            self.calculo_bdr[operacao]['Dólar (R$)'] = bdr.dolar_compra
+            self.calculo_bdr[operacao]['Dólar (R$)'] = '{:.2f}'.format(bdr.dolar_compra)
             self.calculo_bdr[operacao]['Preço referência (R$)'] = '{:.2f}'.format(bdr.preco_referencia_venda)
         else:
-            self.calculo_bdr[operacao]['Dólar (R$)'] = bdr.dolar_venda
+            self.calculo_bdr[operacao]['Dólar (R$)'] = '{:.2f}'.format(bdr.dolar_venda)
             self.calculo_bdr[operacao]['Preço referência (R$)'] = '{:.2f}'.format(bdr.preco_referencia_compra)
         
         self.calculo_bdr[operacao]['Preço atual (R$)'] = '{:.2f}'.format(valor_BR_digitado)

@@ -207,7 +207,7 @@ class ExtratoOperacao(models.Model):
 
 
     def total(self):
-        if self.operacao == 'VENDA' or 'Venda':
+        if self.operacao == ('VENDA' or 'Venda'):
             return self.quantidade * (self.valor_unitario - self.custos_transacao)
         else:
             return self.quantidade * (self.valor_unitario + self.custos_transacao)

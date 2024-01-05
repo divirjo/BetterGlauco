@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.contrib import messages
 from django.utils import timezone
 import requests
@@ -9,11 +10,11 @@ class BDR():
     _CONSTANTE = Constante()
     
     def __init__(self, request, ticket):
-        self.dolar_venda = 0.0
-        self.dolar_compra = 0.0
-        self.ticket_original_valor_us = 0.0
-        self.preco_referencia_compra = 0.0
-        self.preco_referencia_venda = 0.0
+        self.dolar_venda = Decimal(0.0)
+        self.dolar_compra = Decimal(0.0)
+        self.ticket_original_valor_us = Decimal(0.0)
+        self.preco_referencia_compra = Decimal(0.0)
+        self.preco_referencia_venda = Decimal(0.0)
         self.custos_bdr = self._CONSTANTE.BDR_CUSTO()
         self._request = request
         
@@ -37,7 +38,7 @@ class BDR():
         if self.ativo_selecionado.ticket:
             self.get_cotacao_dolar()
             if valor_US > 0:
-                self.ticket_original_valor_us = valor_US
+                self.ticket_original_valor_us = Decimal(valor_US)
             else:
                 self.get_cotacao_ticker_referencia()
             self.get_preco_referencia()
@@ -56,8 +57,8 @@ class BDR():
             messages.error(self._request, 'Cotação dolar indisponível.')
             return
         
-        self.dolar_venda = dados_dic['value'][0]['cotacaoCompra']
-        self.dolar_compra = dados_dic['value'][0]['cotacaoVenda']
+        self.dolar_venda = Decimal(dados_dic['value'][0]['cotacaoCompra'])
+        self.dolar_compra = Decimal(dados_dic['value'][0]['cotacaoVenda'])
         
     def get_cotacao_ticker_referencia(self):
         '''
@@ -76,16 +77,15 @@ class BDR():
     def consultar_api_cotacoes(self, data_consulta):
         e_mail = self._CONSTANTE.E_MAIL_API_SCRAPERLINK()
         link_api='http://api.scraperlink.com/investpy/?email={}&type=historical_data&product=etfs&from_date={}&to_date={}&time_frame=Daily&country=united%20states&symbol={}'.format(e_mail, data_consulta, data_consulta, self.ativo_selecionado.ticket_original)
-        print (link_api)
         dados = requests.get(link_api)
         dados_dic = dados.json()
         
         if  dados_dic['data']:
-            return dados_dic['data'][0]['last_close']
+            return Decimal(dados_dic['data'][0]['last_close'])
         else:
-            return 0.0
+            return Decimal(0.0)
         
     
     def get_preco_referencia(self):
-        self.preco_referencia_compra = float(self.dolar_venda) * float(self.ticket_original_valor_us) * float(self.custos_bdr)  / float(self.ativo_selecionado.desdobramento)
-        self.preco_referencia_venda = float(self.dolar_compra) * float(self.ticket_original_valor_us) * float(self.custos_bdr) / float(self.ativo_selecionado.desdobramento)
+        self.preco_referencia_compra = self.dolar_venda * self.ticket_original_valor_us * self.custos_bdr  / self.ativo_selecionado.desdobramento
+        self.preco_referencia_venda = self.dolar_compra * self.ticket_original_valor_us * self.custos_bdr / self.ativo_selecionado.desdobramento
