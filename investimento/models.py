@@ -109,12 +109,12 @@ class AtivoPerfilCaixa(models.Model):
         """
         
         if self.ativo.ticket == '':
-            return (self.subclasseNome + ' - ' + 
-                    self.ativoNome)
+            return (self.subclasse.caixa.nome + ' - ' + 
+                    self.ativo.nome + ' (' + self.corretora.nome + ')')
         else:
-            return (self.subclasse.nome + ' - ' + 
+            return (self.subclasse.caixa.nome + ' - ' + 
                 self.ativo.ticket + ' - ' + 
-                self.ativo.nome)     
+                self.ativo.nome + ' (' + self.corretora.nome + ')')     
 
 
 class Caixa(models.Model):
@@ -201,10 +201,14 @@ class ExtratoOperacao(models.Model):
         """
             Altera o nome padrão de exibição do objeto da classe.
         """
-        return (self.ativo_perfil_caixa.alocacao_caixa_primaria.perfil.nome + ' - ' + 
+        if self.ativo_perfil_caixa.ativo.ticket == '':
+            return (self.ativo_perfil_caixa.corretora.nome + ' - ' + 
+                self.ativo_perfil_caixa.ativo.nome + ': ' + 
+                self.data.strftime(f"%Y-%m-%d")) 
+        else:
+            return (self.ativo_perfil_caixa.corretora.nome + ' - ' + 
                 self.ativo_perfil_caixa.ativo.ticket + ': ' + 
-                self.data.strftime(f"%Y-%m-%d"))    
-
+                self.data.strftime(f"%Y-%m-%d")) 
 
     def total(self):
         if self.operacao == ('VENDA' or 'Venda'):
@@ -242,8 +246,12 @@ class PosicaoData(models.Model):
         """
             Altera o nome padrão de exibição do objeto da classe.
         """
-        return (self.ativo_perfil_caixa.alocacao_caixa_primaria.nome + ' - ' + 
+        
+        if self.ativo_perfil_caixa.ativo.ticket == '':
+            return (self.ativo_perfil_caixa.corretora.nome + ' - ' + 
+                self.ativo_perfil_caixa.ativo.nome + ': ' + 
+                self.data.strftime(f"%Y-%m-%d")) 
+        else:
+            return (self.ativo_perfil_caixa.corretora.nome + ' - ' + 
                 self.ativo_perfil_caixa.ativo.ticket + ': ' + 
                 self.data.strftime(f"%Y-%m-%d"))  
-
-    

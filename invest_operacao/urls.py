@@ -20,7 +20,7 @@ urlpatterns = [
          RegistraNotaCorretagem.as_view(), 
          name='nota_corretagem'),
      
-     path('individual/', 
+    path('individual/', 
          OperacaoIndividual.as_view(), 
          name='operacao_individual'),
     path('individual/novo/', 

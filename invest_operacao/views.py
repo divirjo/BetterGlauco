@@ -1,13 +1,14 @@
 from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Value, CharField
+from django.db.models import Value
 from django.db.models.functions import Concat
 from django_filters.views import FilterView
 import django_tables2 as tables2 
 from django_tables2.paginators import LazyPaginator
-from django.shortcuts import redirect, render
-from django.views.generic import FormView, TemplateView, UpdateView
+from django.shortcuts import redirect
+from django.views.generic import FormView, UpdateView
+
 from .filtros_operacoes import FiltroOperacaoAtivo
 from .forms_operacoes import FormOperacaoNotaCorretagem, \
                                 FormExtratoOperacao

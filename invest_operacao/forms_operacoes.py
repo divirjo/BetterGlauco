@@ -1,8 +1,7 @@
 from django import forms
 from typing import Any
 from investimento.models import ExtratoOperacao, \
-                                LISTA_OPERACOES, \
-                                AtivoPerfilCaixa
+                                LISTA_OPERACOES
 
 
 class FormOperacaoNotaCorretagem(forms.Form):

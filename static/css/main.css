@@ -6,3 +6,35 @@ ion-icon {
 tr.even {
     background-color: rgb(243 244 246);
 }
+
+ul.pagination {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: inline-block;
+    }
+
+ul.pagination li {
+    display: inline-block;
+      }
+      
+ul.pagination li a {
+        display: block;
+        color: #78350F;
+        text-align: center;
+        padding: 16px;
+        text-decoration: none;
+      }
+      
+ul.pagination li a:hover {
+    background-color: #d3d3d3;
+      }
+ul.pagination li.active {
+        background-color: #78350F;
+      }
+
+ul.pagination li.active a {
+        color: #FFFFFF;
+      }
+

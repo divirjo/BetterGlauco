@@ -1,10 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django_filters.views import FilterView
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 import django_tables2 as tables2 
 from django.views.generic import FormView, TemplateView, UpdateView
-from .filtros import FiltroClasseAtivo
+from .filtros import FiltroAtivo, FiltroClasseAtivo
 from .forms import FormAtivo, \
                     FormAtivoPerfilCaixa, \
                     FormCaixa, \
@@ -20,7 +20,6 @@ from investimento.tabelas import TabelaAtivos, \
                                     TabelaClasseAtivo, \
                                     TabelaInstituicaoFinanceira
 from .tabela_alocacao import TabelaAlocacao
-from BetterGlauco.parametro import Constante
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 
 
@@ -43,10 +42,12 @@ class ConfiguracaoMenu(LoginRequiredMixin, TemplateView):
         return context 
 
 
-class ConfigurarAtivo(LoginRequiredMixin, tables2.SingleTableView):
-    table_class = TabelaAtivos
+class ConfigurarAtivo(LoginRequiredMixin, tables2.SingleTableMixin, FilterView):
+    filterset_class = FiltroAtivo
     queryset = Ativo.objects.order_by('ticket','nome')
-    template_name = 'configuracao_listar_tabela.html'
+    model = Ativo
+    table_class = TabelaAtivos
+    template_name = 'configuracao_filtrar_tabela.html'
 
        
     def get_context_data(self, **kwargs):
