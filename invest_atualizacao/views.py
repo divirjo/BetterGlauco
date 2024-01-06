@@ -68,7 +68,6 @@ class PosicaoIndividualNova(LoginRequiredMixin, FormView):
             .filter(subclasse__caixa__perfil=context['id_perfil_selecionado']) \
             .order_by('subclasse__caixa__nome','ativo__ticket','ativo__nome')
         
-
         return context 
     
     
@@ -81,9 +80,29 @@ class PosicaoIndividualNova(LoginRequiredMixin, FormView):
         return redirect('invest_atualizacao:posicao_individual')   
     
     
-class PosicaoIndividualEditar(LoginRequiredMixin, TemplateView):
+class PosicaoIndividualEditar(LoginRequiredMixin, UpdateView):
+    form_class = FormPosicaoData
+    model = PosicaoData
     template_name = 'atualizar_posicao_ativo.html'
     
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        context['nome_parametro'] = 'valor atualizado'
+        
+        context['form'].fields['ativo_perfil_caixa'].queryset = AtivoPerfilCaixa.objects \
+            .filter(subclasse__caixa__perfil=context['id_perfil_selecionado']) \
+            .order_by('subclasse__caixa__nome','ativo__ticket','ativo__nome')
+        
+        return context 
     
+    
+    def form_valid(self, form, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        operacao = form.save(commit=False)
+        operacao.save() 
+        messages.success(self.request, 'Posição do ativo atualizada com sucesso')
+        return redirect('invest_atualizacao:posicao_individual')  
     

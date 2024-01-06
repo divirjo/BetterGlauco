@@ -10,7 +10,7 @@ from investimento.models import PosicaoData
 
 class TabelaPosicaoAtivos(tables.Table):
     
-    editar = tables.LinkColumn('invest_atualizacao:operacao_individual_editar',
+    editar = tables.LinkColumn('invest_atualizacao:posicao_individual_editar',
                                text='atualizar', 
                                args=[tables.utils.A('pk')], 
                                orderable=False,
