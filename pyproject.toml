@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "-betterglauco"
+name = "betterglauco"
 version = "0.1.0"
 description = ""
 authors = ["divirjo <worldoftyto@gmail.com>"]
 readme = "README.md"
-packages = [{include = "_betterglauco"}]
+packages = [{include = "betterglauco"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"

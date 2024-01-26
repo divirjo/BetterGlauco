@@ -164,6 +164,33 @@ class ClasseAtivo(models.Model):
         return self.caixa.nome + ' - ' + self.nome    
 
 
+class Dividendos(models.Model):
+    """
+    Nesta tabela são armazenados os dividendos recebidos
+    """
+    ativo_perfil_caixa = models.ForeignKey('AtivoPerfilCaixa', 
+                              related_name='dividendos',
+                              on_delete=models.PROTECT)
+    data = models.DateTimeField(default=timezone.now)
+    dividendos = models.DecimalField(max_digits=19, 
+                       decimal_places=4, 
+                       default=0,
+                       help_text='valor dividendos recebidos')
+
+    def __str__(self) -> str:
+        """
+            Altera o nome padrão de exibição do objeto da classe.
+        """
+        if self.ativo_perfil_caixa.ativo.ticket == '':
+            return (self.ativo_perfil_caixa.corretora.nome + ' - ' + 
+                self.ativo_perfil_caixa.ativo.nome + ': ' + 
+                self.data.strftime(f"%Y-%m-%d")) 
+        else:
+            return (self.ativo_perfil_caixa.corretora.nome + ' - ' + 
+                self.ativo_perfil_caixa.ativo.ticket + ': ' + 
+                self.data.strftime(f"%Y-%m-%d")) 
+
+
 class InstituicaoFinanceira(models.Model):
     nome = models.TextField(max_length=100)
     perfil = models.ForeignKey('Perfil', 
@@ -228,22 +255,18 @@ class PosicaoData(models.Model):
                               related_name='posicoes',
                               on_delete=models.PROTECT)
     data = models.DateTimeField(default=timezone.now)
-    # cotas do ativo, disponibilizada na corretora
     cota_ativo_quantidade = models.DecimalField(max_digits=15,
                                 decimal_places=10,
-                                default=0)
-    # quantidade de cotas calculadas pelo sistema
+                                default=0,
+                                help_text='cotas do ativo, disponibilizada na corretora')
     cota_sistema_quantidade = models.DecimalField(max_digits=15,
                                 decimal_places=10,
-                                default=0)
-    # valor cota do sistema
+                                default=0,
+                                help_text='quantidade de cotas calculadas pelo sistema')
     cota_sistema_valor = models.DecimalField(max_digits=19, 
                        decimal_places=4, 
-                       default=0)
-    # valor dividendos recebidos
-    dividendos = models.DecimalField(max_digits=19, 
-                       decimal_places=4, 
-                       default=0)
+                       default=0,
+                       help_text='valor cota do sistema')
 
     def __str__(self) -> str:
         """
@@ -257,4 +280,35 @@ class PosicaoData(models.Model):
         else:
             return (self.ativo_perfil_caixa.corretora.nome + ' - ' + 
                 self.ativo_perfil_caixa.ativo.ticket + ': ' + 
+                self.data.strftime(f"%Y-%m-%d"))  
+            
+
+class PosicaoDataBolsa(models.Model):
+    """
+    Nesta tabela são armazenados as atualizações de valor dos investimentos, viabilizando a análise histórica.
+    """
+    ativo = models.ForeignKey('Ativo', 
+                              related_name='posicoesBolsa',
+                              on_delete=models.PROTECT)
+    data = models.DateTimeField(default=timezone.now)
+    cota_valor = models.DecimalField(max_digits=19, 
+                       decimal_places=4, 
+                       default=0,
+                       help_text='valor cota na bolsa')
+    cota_valor_dolar = models.DecimalField(max_digits=19, 
+                       decimal_places=4, 
+                       default=0,
+                       help_text='valor em dolar da cota na bolsa')
+
+    def __str__(self) -> str:
+        """
+            Altera o nome padrão de exibição do objeto da classe.
+        """
+        
+        if self.ativo_perfil_caixa.ativo.ticket == '':
+            return (self.ativo_perfil_caixa.ativo.nome + ': ' + 
+                self.data.strftime(f"%Y-%m-%d")) 
+        else:
+            return (self.ativo_perfil_caixa.ativo.ticket + ' - ' + 
+                self.ativo_perfil_caixa.ativo.nome + ': ' + 
                 self.data.strftime(f"%Y-%m-%d"))  
