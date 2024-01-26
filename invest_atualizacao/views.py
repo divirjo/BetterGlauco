@@ -1,10 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django_filters.views import FilterView
 from django.shortcuts import redirect
 import django_tables2 as tables2
 from django.views.generic import FormView, TemplateView, UpdateView
 
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
+from .filtros import FiltroPosicaoData
 from .forms import FormPosicaoData
 from .tabelas import TabelaPosicaoAtivos
 from investimento.models import AtivoPerfilCaixa,PosicaoData
@@ -36,9 +38,11 @@ class PosicaoCorretoraEditar(LoginRequiredMixin, TemplateView):
     template_name = 'atualizacao_inicio.html'
     
 
-class PosicaoIndividual(LoginRequiredMixin, tables2.SingleTableMixin, TemplateView):
+class PosicaoIndividual(LoginRequiredMixin, tables2.SingleTableMixin, FilterView):
+    filterset_class = FiltroPosicaoData
     table_class = TabelaPosicaoAtivos
     template_name = 'posicao_ativo.html'
+    
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -47,6 +51,17 @@ class PosicaoIndividual(LoginRequiredMixin, tables2.SingleTableMixin, TemplateVi
         context['nome_parametro'] = 'valor atualizado'
         context['url_insert'] = 'invest_atualizacao:posicao_individual_nova'
         return context 
+    
+    
+    def get_filterset(self, *args, **kwargs):
+        fs = super().get_filterset(*args, **kwargs)
+        fs.filters['ativo_perfil_caixa'].field.queryset = AtivoPerfilCaixa.objects.filter(
+            subclasse__caixa__perfil=Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+            )
+        #fs.filters['ativo_perfil_caixa'].field.queryset = fs.filters['ativo_perfil_caixa'].field.queryset.filter(subclasse__caixa__perfil_id=self.request.session['id_perfil_selecionado'])
+        fs.filters['ativo_perfil_caixa'].field.to_field_name = ('corretora')
+        return fs
+    
     
     def get_queryset(self, **kwargs):
         return PosicaoData.objects.filter(

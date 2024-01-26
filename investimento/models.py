@@ -59,6 +59,9 @@ class Ativo(models.Model):
                             default='',
                             blank=True,
                             help_text='CNPJ do ativo')
+    cota_bolsa = models.BooleanField(default=False,
+                                     blank=False,
+                                    help_text='O ativo possui cota na bolsa?')
     # Parametrização BDRs (ativo referência e desdobramento)
     ticket_original = models.CharField(max_length=10,
                                        default='',
