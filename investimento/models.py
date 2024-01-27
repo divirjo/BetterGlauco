@@ -62,6 +62,9 @@ class Ativo(models.Model):
     cota_bolsa = models.BooleanField(default=False,
                                      blank=False,
                                     help_text='O ativo possui cota na bolsa?')
+    dividendos = models.BooleanField(default=False,
+                                     blank=False,
+                                    help_text='O ativo distribui dividendos?')
     # Parametrização BDRs (ativo referência e desdobramento)
     ticket_original = models.CharField(max_length=10,
                                        default='',

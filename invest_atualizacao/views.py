@@ -9,7 +9,7 @@ from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 from .filtros import FiltroPosicaoData
 from .forms import FormPosicaoData
 from .tabelas import TabelaPosicaoAtivos
-from investimento.models import AtivoPerfilCaixa,PosicaoData
+from investimento.models import AtivoPerfilCaixa, InstituicaoFinanceira, PosicaoData
 
 
 class InicioAtualizacao(LoginRequiredMixin, TemplateView):
@@ -21,10 +21,22 @@ class InicioAtualizacao(LoginRequiredMixin, TemplateView):
         return context 
     
 
-
-class InicioAtualizacao(LoginRequiredMixin, TemplateView):
+class DividendosInicio(LoginRequiredMixin, TemplateView):
     template_name = 'atualizacao_inicio.html'
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        return context 
+    
+
+class DividendoNovo(LoginRequiredMixin, TemplateView):
+    template_name = 'atualizacao_inicio.html'
+    
+
+class DividendoEditar(LoginRequiredMixin, TemplateView):
+    template_name = 'atualizacao_inicio.html'
+
 
 class PosicaoCorretora(LoginRequiredMixin, TemplateView):
     template_name = 'atualizacao_inicio.html'
@@ -55,11 +67,7 @@ class PosicaoIndividual(LoginRequiredMixin, tables2.SingleTableMixin, FilterView
     
     def get_filterset(self, *args, **kwargs):
         fs = super().get_filterset(*args, **kwargs)
-        fs.filters['ativo_perfil_caixa'].field.queryset = AtivoPerfilCaixa.objects.filter(
-            subclasse__caixa__perfil=Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-            )
-        #fs.filters['ativo_perfil_caixa'].field.queryset = fs.filters['ativo_perfil_caixa'].field.queryset.filter(subclasse__caixa__perfil_id=self.request.session['id_perfil_selecionado'])
-        fs.filters['ativo_perfil_caixa'].field.to_field_name = ('corretora')
+        fs.filters['ativo_perfil_caixa__corretora'].field.queryset = InstituicaoFinanceira.objects.filter(perfil=self.request.session['id_perfil_selecionado'])
         return fs
     
     
