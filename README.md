@@ -2,7 +2,7 @@
 
 ## Documentação
 
-* [AUTOTITLE]()
+* [AUTOTITLE](/docs/modulo_atualizacao.md)
 
 ## Instalação
 
