@@ -52,8 +52,15 @@ class OperacaoIndividual(LoginRequiredMixin, tables2.SingleTableMixin, FilterVie
     
     def get_filterset(self, *args, **kwargs):
         fs = super().get_filterset(*args, **kwargs)
-        fs.filters['ativo_perfil_caixa'].field.queryset = fs.filters['ativo_perfil_caixa'].field.queryset.filter(subclasse__caixa__perfil_id=self.request.session['id_perfil_selecionado'])
-        fs.filters['ativo_perfil_caixa'].field.order_by = ('ativo_perfil_caixa__ativo__ticket','ativo_perfil_caixa__ativo__nome')
+        fs.filters['ativo_perfil_caixa'].field.queryset = \
+            fs.filters['ativo_perfil_caixa'].field.queryset.filter(
+                    subclasse__caixa__perfil_id= \
+                        self.request.session['id_perfil_selecionado']
+            )
+        fs.filters['ativo_perfil_caixa'].field.order_by = (
+            'ativo_perfil_caixa__ativo__ticket',
+            'ativo_perfil_caixa__ativo__nome'
+        )
         return fs
     
     def get_queryset(self, **kwargs):

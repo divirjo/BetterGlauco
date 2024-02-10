@@ -6,9 +6,9 @@ from BetterGlauco.tabelas_formatacao import ColunaData, \
                                         ColunaDinheiro, \
                                         ColunaSomaDinheiro, \
                                         ParametrosTabelas
-from investimento.models import PosicaoData
+from investimento.models import PosicaoData, PosicaoDataBolsa
 
-class TabelaPosicaoAtivos(tables.Table):
+class TabelaEdicaoPosicaoFundos(tables.Table):
     
     editar = tables.LinkColumn('invest_atualizacao:posicao_individual_editar',
                                text='atualizar', 
@@ -19,4 +19,17 @@ class TabelaPosicaoAtivos(tables.Table):
     
     class Meta:
         model = PosicaoData
+        attrs = ParametrosTabelas.CSS_PADRAO
+        
+        
+class TabelaPosicaoFundos(tables.Table):
+     
+    class Meta:
+        model = PosicaoData
+        attrs = ParametrosTabelas.CSS_PADRAO
+        
+class TabelaPosicaoBolsa(tables.Table):
+     
+    class Meta:
+        model = PosicaoDataBolsa
         attrs = ParametrosTabelas.CSS_PADRAO
