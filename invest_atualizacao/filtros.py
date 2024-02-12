@@ -1,7 +1,7 @@
 from django import forms
 from django_filters import FilterSet, ModelChoiceFilter
 
-from investimento.models import Ativo, AtivoPerfilCaixa, InstituicaoFinanceira, PosicaoData 
+from investimento.models import Ativo, AtivoPerfilCaixa, InstituicaoFinanceira, PosicaoDataFundo
 
 '''
 class CustomModelChoiceField(forms.ModelChoiceField):
@@ -23,7 +23,7 @@ class FiltroAtivoFundos(FilterSet):
     )
 
     class Meta:
-        model = PosicaoData
+        model = PosicaoDataFundo
         fields = {'ativo_perfil_caixa': ['exact']}  
 
 
@@ -36,5 +36,5 @@ class FiltroCorretoraAtivo(FilterSet):
     )
 
     class Meta:
-        model = PosicaoData
+        model = PosicaoDataFundo
         fields = {'ativo_perfil_caixa__corretora': ['exact']}  

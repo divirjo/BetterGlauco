@@ -1,7 +1,7 @@
 from django import forms
 from typing import Any
 from investimento.models import ExtratoOperacao, \
-                                LISTA_OPERACOES
+    TipoOperacao
 
 
 class FormOperacaoNotaCorretagem(forms.Form):
@@ -10,9 +10,11 @@ class FormOperacaoNotaCorretagem(forms.Form):
     
     ativoPerfilCaixa = forms.ChoiceField(label='Ativo')
     
-    operacao = forms.ChoiceField(choices=LISTA_OPERACOES,
-                                 initial='COMPRA',
-                                 label='Operação')
+    operacao = forms.ChoiceField(
+        choices=TipoOperacao.choices,
+        initial=TipoOperacao.COMPRA,
+        label='Operação'
+    )
     
     quantidade = forms.DecimalField(label='Quantidade')
     

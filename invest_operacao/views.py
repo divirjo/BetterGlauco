@@ -9,13 +9,14 @@ from django_tables2.paginators import LazyPaginator
 from django.shortcuts import redirect
 from django.views.generic import FormView, UpdateView
 
+from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
+from investimento.models import AtivoPerfilCaixa, ExtratoOperacao
 from .filtros_operacoes import FiltroOperacaoAtivo
 from .forms_operacoes import FormOperacaoNotaCorretagem, \
                                 FormExtratoOperacao
 from .nota_corretagem import registrar_nota_corretagem
 from .tabelas import TabelaExtratoOperacoes, tabelaNotaCorretagem
-from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
-from investimento.models import AtivoPerfilCaixa, ExtratoOperacao
+
 
 
 class InicioOperacao(LoginRequiredMixin, tables2.SingleTableView):

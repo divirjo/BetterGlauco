@@ -30,6 +30,7 @@
         "Posicao",
         "posicoes",
         "postgresql",
+        "pytz",
         "rodape",
         "SCRAPERLINK",
         "tfoot",

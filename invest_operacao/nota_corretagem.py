@@ -1,9 +1,8 @@
 from datetime import datetime
 from decimal import Decimal
+import pytz
 import pandas as pd
-from investimento.models import AtivoPerfilCaixa, \
-                                ExtratoOperacao, \
-                                LISTA_OPERACOES
+from investimento.models import AtivoPerfilCaixa, ExtratoOperacao, TipoOperacao
 
 class registrar_nota_corretagem():
     
@@ -11,30 +10,33 @@ class registrar_nota_corretagem():
     
     id_linha_selecionada = -1
     
+    _data = str(datetime.now().strftime(r'%d/%m/%Y'))
+    
     _total_custos = 0
     
     _ir_fonte = 0
     
-    _operacoes = LISTA_OPERACOES
+    _operacoes = TipoOperacao.choices
     
     _df_nota_corretagem = pd.DataFrame()
     
-    _linha_df_nota_corretagem = {'id': 0,
-                                    'ativo_perfil_caixa_id': 0, 
-                                       'ativo_ticket': '',
-                                       'ativo_nome': '',
-                                       'data': '',
-                                       'operacao': '',
-                                       'quantidade': Decimal(0),
-                                       'valor_unitario': Decimal(0),
-                                       'custo_unitario_transacao': Decimal(0),
-                                       'total': Decimal(0),
-                                       'ir_fonte_unitario': Decimal(0) }
+    _linha_df_nota_corretagem = {
+        'id': 0,
+        'ativo_perfil_caixa_id': 0, 
+        'ativo_ticket': '',
+        'ativo_nome': '',
+        'data': '',
+        'operacao': '',
+        'quantidade': Decimal(0),
+        'valor_unitario': Decimal(0),
+        'custo_unitario_transacao': Decimal(0),
+        'total': Decimal(0),
+        'ir_fonte_unitario': Decimal(0) 
+    }
     
     
     def __init__(self):
         self.nova_nota_corretagem()
-        self._data = datetime.strptime('01/01/2024', r'%d/%m/%Y')
 
         
     def get_dict_nota_corretagem(self):
@@ -45,12 +47,16 @@ class registrar_nota_corretagem():
         return Decimal(self._df_nota_corretagem['quantidade'].sum())
     
     def get_total_operacao_sem_custos(self):
-        sr_total_operacao = self._df_nota_corretagem['quantidade'] * self._df_nota_corretagem['valor_unitario']
+        sr_total_operacao = (
+            self._df_nota_corretagem['quantidade'] * 
+            self._df_nota_corretagem['valor_unitario']
+        )
 
         return Decimal(sr_total_operacao.sum())
     
     def get_total_vendas_sem_custos(self):
-        df_total_operacao = self._df_nota_corretagem.groupby('operacao').apply(lambda x: x['quantidade'] * x['valor_unitario'])
+        df_total_operacao = self._df_nota_corretagem.groupby('operacao') \
+            .apply(lambda x: x['quantidade'] * x['valor_unitario'])
         
         if not df_total_operacao.empty:
             resultado_venda = df_total_operacao.loc['VENDA']
@@ -65,59 +71,88 @@ class registrar_nota_corretagem():
         total_operacao = self.get_total_operacao_sem_custos()
         
         for indice,linha in self._df_nota_corretagem.iterrows():
-            subtotal_operacao_sem_custos = linha['quantidade'] * linha['valor_unitario']
+            subtotal_operacao_sem_custos = (
+                linha['quantidade'] * linha['valor_unitario']
+            )
             
-            custo_ativo_transacao = subtotal_operacao_sem_custos / total_operacao * self._total_custos
+            custo_ativo_transacao = (
+                subtotal_operacao_sem_custos / 
+                total_operacao * self._total_custos
+            )
             
-            custo_unitario_transacao = Decimal(custo_ativo_transacao / linha['quantidade'])
+            custo_unitario_transacao = Decimal(
+                custo_ativo_transacao / linha['quantidade']
+            )
             
-            if linha['operacao'] == ('VENDA' or 'Venda'):
-                total_ativo =  (linha['valor_unitario'] - custo_unitario_transacao) * linha['quantidade']
+            if linha['operacao'] == TipoOperacao.VENDA:
+                total_ativo =  (
+                    (linha['valor_unitario'] - custo_unitario_transacao) * 
+                    linha['quantidade']
+                )
             else:
-                total_ativo =  (linha['valor_unitario'] + custo_unitario_transacao) * linha['quantidade']
+                total_ativo =  (
+                    (linha['valor_unitario'] + custo_unitario_transacao) * 
+                    linha['quantidade']
+                )
             
-            self._df_nota_corretagem.at[indice,'custo_unitario_transacao'] = custo_unitario_transacao
+            self._df_nota_corretagem.at[indice,'custo_unitario_transacao'] = \
+                custo_unitario_transacao
+            
             self._df_nota_corretagem.at[indice,'total'] = Decimal(total_ativo)
     
     
     def distribuir_ir_fonte(self):
         
-        if not self._df_nota_corretagem['operacao'].str.contains('VENDA').any():
+        if not self._df_nota_corretagem['operacao'].str \
+            .contains(TipoOperacao.VENDA).any():
+            
             return
         
         total_vendas = self.get_total_vendas_sem_custos()
         
         for indice,linha in self._df_nota_corretagem.iterrows():
             
-            if not (linha['operacao'] == ('VENDA' or 'Venda')):
+            if not (linha['operacao'] == TipoOperacao.VENDA):
                 continue
             
-            subtotal_operacao_sem_custos = linha['quantidade'] * linha['valor_unitario']
+            subtotal_operacao_sem_custos = (
+                linha['quantidade'] * linha['valor_unitario']
+            )
             
-            ir_transacao = subtotal_operacao_sem_custos /  total_vendas * self._ir_fonte
+            ir_transacao = (
+                subtotal_operacao_sem_custos /  total_vendas * self._ir_fonte
+            )
 
-            self._df_nota_corretagem.at[indice,'ir_fonte'] = Decimal(ir_transacao)
+            self._df_nota_corretagem.at[indice,'ir_fonte'] = \
+                Decimal(ir_transacao)
     
     
-    def alterar_ativo_nota(self, ativo_perfil_caixa_id, operacao, quantidade, valor_unitario):
+    def alterar_ativo_nota(self, ativo_perfil_caixa_id, operacao, 
+            quantidade, valor_unitario):
         
-            
-        self._df_nota_corretagem.at[self.id_linha_selecionada,'ativo_perfil_caixa_id'] = int(ativo_perfil_caixa_id)
+        linha = self._linha_df_nota_corretagem.copy()
         
-        ativo_selecionado = AtivoPerfilCaixa.objects.filter(id=ativo_perfil_caixa_id).values('ativo__ticket', 'ativo__nome')
+        linha['id'] = self.id_linha_selecionada
+        linha['ativo_perfil_caixa_id'] = int(ativo_perfil_caixa_id)
         
-        self._df_nota_corretagem.at[self.id_linha_selecionada,'ativo_ticket'] = ativo_selecionado[0]['ativo__ticket']
-        self._df_nota_corretagem.at[self.id_linha_selecionada,'ativo_nome'] = ativo_selecionado[0]['ativo__nome']
+        ativo_selecionado = AtivoPerfilCaixa.objects \
+            .filter(id=ativo_perfil_caixa_id) \
+            .values('ativo__ticket', 'ativo__nome')
         
-        self._df_nota_corretagem.at[self.id_linha_selecionada,'data'] = self._data
-        self._df_nota_corretagem.at[self.id_linha_selecionada,'operacao'] = operacao
-        self._df_nota_corretagem.at[self.id_linha_selecionada,'quantidade'] =Decimal(quantidade)
-        self._df_nota_corretagem.at[self.id_linha_selecionada,'valor_unitario'] = Decimal(valor_unitario)
+        linha['ativo_ticket'] = ativo_selecionado[0]['ativo__ticket']
+        linha['ativo_nome'] = ativo_selecionado[0]['ativo__nome']
+        linha['data'] = self._data
+        linha['operacao'] = operacao
+        linha['quantidade'] =Decimal(quantidade)
+        linha['valor_unitario'] = Decimal(valor_unitario)
+        
+        self._df_nota_corretagem.loc[self.id_linha_selecionada] = linha
         
         self.distribuir_custos_nota()
         
     
-    def incluir_ativo_nota(self, ativo_perfil_caixa_id, operacao, quantidade, valor_unitario):
+    def incluir_ativo_nota(self, ativo_perfil_caixa_id, operacao, quantidade, 
+            valor_unitario):
         
         nova_linha = self._linha_df_nota_corretagem.copy()
         
@@ -126,7 +161,9 @@ class registrar_nota_corretagem():
             
         nova_linha['ativo_perfil_caixa_id'] = int(ativo_perfil_caixa_id)
         
-        ativo_selecionado = AtivoPerfilCaixa.objects.filter(id=ativo_perfil_caixa_id).values('ativo__ticket', 'ativo__nome')
+        ativo_selecionado = AtivoPerfilCaixa.objects \
+            .filter(id=ativo_perfil_caixa_id) \
+            .values('ativo__ticket', 'ativo__nome')
         
         nova_linha['ativo_ticket'] = ativo_selecionado[0]['ativo__ticket']
         nova_linha['ativo_nome'] = ativo_selecionado[0]['ativo__nome']
@@ -144,18 +181,19 @@ class registrar_nota_corretagem():
         self._id = 0
         self._ir_fonte = 0
         self._total_custos = 0
-        self._df_nota_corretagem = pd.DataFrame(columns=
-                                    ['id',
-                                    'ativo_perfil_caixa_id', 
-                                    'ativo_ticket',
-                                    'ativo_nome',
-                                    'data',
-                                    'operacao',
-                                    'quantidade',
-                                    'valor_unitario',
-                                    'custo_unitario_transacao',
-                                    'total',
-                                    'ir_fonte_unitario'])
+        self._df_nota_corretagem = pd.DataFrame(columns=[
+            'id',
+            'ativo_perfil_caixa_id', 
+            'ativo_ticket',
+            'ativo_nome',
+            'data',
+            'operacao',
+            'quantidade',
+            'valor_unitario',
+            'custo_unitario_transacao',
+            'total',
+            'ir_fonte_unitario'
+        ])
         
     
     def salvar_operacoes_nota(self):
@@ -165,13 +203,16 @@ class registrar_nota_corretagem():
         else:
             mensagem_retorno = 'Ativos incluídos com sucesso:'
         
+        sao_paulo_tz = pytz.timezone('America/Sao_Paulo')
+        
         for indice,linha in self._df_nota_corretagem.iterrows():
             
-            ativo_perfil_caixa = AtivoPerfilCaixa.objects.get(id=int(linha['ativo_perfil_caixa_id']))
+            ativo_perfil_caixa = AtivoPerfilCaixa.objects \
+                .get(id=int(linha['ativo_perfil_caixa_id']))
             
             operacao = ExtratoOperacao(
                 ativo_perfil_caixa=ativo_perfil_caixa,
-                data=linha['data'],
+                data=sao_paulo_tz.localize(linha['data']),
                 operacao=linha['operacao'],
                 valor_unitario=Decimal(linha['valor_unitario']),
                 custos_transacao=Decimal(linha['custo_unitario_transacao']),

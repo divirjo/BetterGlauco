@@ -1,5 +1,7 @@
 ## Início do sistema
 
+Para auxiliar na construção dos fluxos em markdown, estamos utilizando o [Mermaid](https://www.mermaidchart.com/)
+
 # área pública
 
 # área interna

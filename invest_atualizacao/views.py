@@ -7,11 +7,11 @@ from django.views.generic import FormView, TemplateView, UpdateView
 
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 from .filtros import FiltroAtivoFundos, FiltroCorretoraAtivo
-from .forms import FormPosicaoData
+from .forms import FormPosicaoDataFundo
 from .tabelas import TabelaEdicaoPosicaoFundos, TabelaPosicaoFundos, \
     TabelaPosicaoBolsa
 from investimento.models import AtivoPerfilCaixa, \
-    InstituicaoFinanceira, PosicaoData, PosicaoDataBolsa
+    InstituicaoFinanceira, PosicaoDataFundo, PosicaoDataBolsa
 
 
 class InicioAtualizacao(LoginRequiredMixin, TemplateView):
@@ -22,7 +22,7 @@ class InicioAtualizacao(LoginRequiredMixin, TemplateView):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         context['id_perfil_selecionado'] = id_perfil 
         
-        query_pos_fundos =  PosicaoData.objects.filter(
+        query_pos_fundos =  PosicaoDataFundo.objects.filter(
                     ativo_perfil_caixa__subclasse__caixa__perfil=id_perfil
                 ).order_by('-data')
         tabela_posicao_fundos = TabelaPosicaoFundos(query_pos_fundos)
@@ -80,7 +80,7 @@ class PosicaoCorretora(LoginRequiredMixin, TemplateView):
     
     def get_queryset(self, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        query = PosicaoData.objects.filter(
+        query = PosicaoDataFundo.objects.filter(
                     ativo_perfil_caixa__subclasse__caixa__perfil=id_perfil
                 ).order_by('-data')
         return query
@@ -123,14 +123,14 @@ class PosicaoIndividual(LoginRequiredMixin, SingleTableMixin, FilterView):
     
     def get_queryset(self, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        query = PosicaoData.objects.filter(
+        query = PosicaoDataFundo.objects.filter(
             ativo_perfil_caixa__subclasse__caixa__perfil= id_perfil
             ).order_by('-data')
         return query
     
 
 class PosicaoIndividualNova(LoginRequiredMixin, FormView):
-    form_class = FormPosicaoData
+    form_class = FormPosicaoDataFundo
     template_name = 'atualizar_posicao_ativo.html'
     
     
@@ -164,8 +164,8 @@ class PosicaoIndividualNova(LoginRequiredMixin, FormView):
     
     
 class PosicaoIndividualEditar(LoginRequiredMixin, UpdateView):
-    form_class = FormPosicaoData
-    model = PosicaoData
+    form_class = FormPosicaoDataFundo
+    model = PosicaoDataFundo
     template_name = 'atualizar_posicao_ativo.html'
     
 

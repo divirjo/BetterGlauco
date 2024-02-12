@@ -1,8 +1,8 @@
 from django import forms
-from investimento.models import PosicaoData
+from investimento.models import PosicaoDataFundo
 
-class FormPosicaoData(forms.ModelForm):
+class FormPosicaoDataFundo(forms.ModelForm):
     
     class Meta:
-        model = PosicaoData
+        model = PosicaoDataFundo
         fields = '__all__'

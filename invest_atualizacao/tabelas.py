@@ -6,7 +6,7 @@ from BetterGlauco.tabelas_formatacao import ColunaData, \
                                         ColunaDinheiro, \
                                         ColunaSomaDinheiro, \
                                         ParametrosTabelas
-from investimento.models import PosicaoData, PosicaoDataBolsa
+from investimento.models import PosicaoDataFundo, PosicaoDataBolsa
 
 class TabelaEdicaoPosicaoFundos(tables.Table):
     
@@ -18,14 +18,14 @@ class TabelaEdicaoPosicaoFundos(tables.Table):
                                attrs=ParametrosTabelas.CSS_LINK) 
     
     class Meta:
-        model = PosicaoData
+        model = PosicaoDataFundo
         attrs = ParametrosTabelas.CSS_PADRAO
         
         
 class TabelaPosicaoFundos(tables.Table):
      
     class Meta:
-        model = PosicaoData
+        model = PosicaoDataFundo
         attrs = ParametrosTabelas.CSS_PADRAO
         
 class TabelaPosicaoBolsa(tables.Table):
