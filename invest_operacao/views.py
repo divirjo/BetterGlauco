@@ -85,8 +85,6 @@ class OperacaoIndividualNova(LoginRequiredMixin, FormView):
     
     
     def form_valid(self, form, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         operacao = form.save(commit=False)
         operacao.save() 
         messages.success(self.request, 'Operação de {} cadastrada com sucesso'.format(form.cleaned_data['operacao']))
@@ -109,8 +107,6 @@ class OperacaoIndividualEditar(LoginRequiredMixin, UpdateView):
         return context 
     
     def form_valid(self, form, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         operacao = form.save(commit=False)
         operacao.save() 
         messages.success(self.request, 'Operação de {} atualizada com sucesso'.format(form.cleaned_data['operacao']))

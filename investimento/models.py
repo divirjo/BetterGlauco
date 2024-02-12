@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
 
-
 class TipoOperacao(models.TextChoices):
     VENDA = 'VENDA', 'Venda'
     COMPRA = 'COMPRA', 'Compra'
@@ -370,7 +369,6 @@ class PosicaoDataBolsa(models.Model):
             (investimentos internacionais)'
     )
     
-    
     def __str__(self) -> str:
         """
             Altera o nome padrão de exibição do objeto da classe.
@@ -431,3 +429,32 @@ class PosicaoDataFundo(models.Model):
                 self.data.strftime(f"%Y-%m-%d")
             )  
             
+    def cotas(self):
+        '''
+            Cria coluna calculada que representa a quantidade de cotas do ativo
+        '''
+        
+        total_adquirido = ExtratoOperacao.objects \
+            .filter(
+                ativo_perfil_caixa__ativo=self.ativo_perfil_caixa.ativo,
+            ).exclude(operacao=TipoOperacao.VENDA) \
+            .aggregate(models.Sum('quantidade'))
+            
+        total_vendido = ExtratoOperacao.objects \
+            .filter(
+                ativo_perfil_caixa__ativo=self.ativo_perfil_caixa.ativo,
+                operacao=TipoOperacao.VENDA
+            ).aggregate(models.Sum('quantidade'))
+         
+        saldo_cotas = total_adquirido['quantidade__sum'] - \
+            total_vendido['quantidade__sum'] 
+        return  saldo_cotas
+    
+    def total(self):
+        '''
+            Cria coluna calculada que representa a quantidade de cotas do ativo
+        '''
+        
+        total = self.cota_sistema_valor * self.cotas()
+        return  total
+    
