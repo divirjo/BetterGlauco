@@ -1,52 +1,59 @@
 from django.urls import path
 from .views import InicioAtualizacao, \
-                    DividendosInicio, \
-                    DividendoNovo, \
-                    DividendoEditar, \
-                    PosicaoCorretora, \
-                    PosicaoCorretoraNova, \
-                    PosicaoCorretoraEditar, \
-                    PosicaoIndividual, \
-                    PosicaoIndividualNova, \
-                    PosicaoIndividualEditar
+    DividendosInicio, DividendoNovo, DividendoEditar, \
+    PosicaoCorretora, PosicaoCorretoraNova, PosicaoCorretoraEditar, \
+    PosicaoIndividualBolsa, PosicaoIndividualBolsaNova, \
+    PosicaoIndividualBolsaEditar, \
+    PosicaoIndividualFundo, PosicaoIndividualFundoNova, \
+    PosicaoIndividualFundoEditar
 
 
 
 app_name='invest_atualizacao'
 
 urlpatterns = [
-     path('', 
-         InicioAtualizacao.as_view(), 
-         name='inicio_atualizacao'),
+    path('', 
+        InicioAtualizacao.as_view(), 
+        name='inicio_atualizacao'),
      
-     path('corretora/', 
-         PosicaoCorretora.as_view(), 
-         name='posicao_corretora'),
-     path('corretora/novo/', 
-         PosicaoCorretoraNova.as_view(), 
-         name='posicao_corretora_nova'),
-     path('corretora/editar/<int:pk>', 
-         PosicaoCorretoraEditar.as_view(), 
-         name='posicao_corretora_editar'),
+    path('corretora/', 
+        PosicaoCorretora.as_view(), 
+        name='posicao_corretora'),
+    path('corretora/novo/', 
+        PosicaoCorretoraNova.as_view(), 
+        name='posicao_corretora_nova'),
+    path('corretora/editar/<int:pk>', 
+        PosicaoCorretoraEditar.as_view(), 
+        name='posicao_corretora_editar'),
      
     path('dividendos/', 
-         DividendosInicio.as_view(), 
-         name='dividendos'),
-     path('dividendos/novo/', 
-         DividendoNovo.as_view(), 
-         name='dividendos_novo'),
-     path('dividendos/editar/<int:pk>', 
-         DividendoEditar.as_view(), 
-         name='dividendos_editar'), 
+        DividendosInicio.as_view(), 
+        name='dividendos'),
+    path('dividendos/novo/', 
+        DividendoNovo.as_view(), 
+        name='dividendos_novo'),
+    path('dividendos/editar/<int:pk>', 
+        DividendoEditar.as_view(), 
+        name='dividendos_editar'), 
+
+    path('individual/bolsa/', 
+        PosicaoIndividualBolsa.as_view(), 
+        name='posicao_individual_bolsa'),
+    path('individual/bolsa/novo/', 
+        PosicaoIndividualBolsaNova.as_view(), 
+        name='posicao_individual_bolsa_nova'),
+    path('individual/bolsa/editar/<int:pk>', 
+        PosicaoIndividualBolsaEditar.as_view(), 
+        name='posicao_individual_bolsa_editar'),  
      
-     path('individual/', 
-         PosicaoIndividual.as_view(), 
-         name='posicao_individual'),
-     path('individual/novo/', 
-         PosicaoIndividualNova.as_view(), 
-         name='posicao_individual_nova'),
-     path('individual/editar/<int:pk>', 
-         PosicaoIndividualEditar.as_view(), 
-         name='posicao_individual_editar'),
-    
-    ]
+    path('individual/fundo/', 
+        PosicaoIndividualFundo.as_view(), 
+        name='posicao_individual_fundo'),
+    path('individual/fundo/novo/', 
+        PosicaoIndividualFundoNova.as_view(), 
+        name='posicao_individual_fundo_nova'),
+    path('individual/fundo/editar/<int:pk>', 
+        PosicaoIndividualFundoEditar.as_view(), 
+        name='posicao_individual_fundo_editar'),    
+
+]

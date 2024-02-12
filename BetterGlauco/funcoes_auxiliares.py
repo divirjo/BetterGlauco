@@ -2,13 +2,15 @@ from decimal import Decimal
 
 class Funcoes_auxiliares():
     '''
-    Classe de funções auxiliares, não possui um objeto a ser construído, em razão disso não há o parâmetro self nas declarações dos métodos.
+    Classe de funções auxiliares, não possui um objeto a ser construído, 
+    em razão disso não há o parâmetro self nas declarações dos métodos.
     '''
     
     
     def converte_numero_str(numero_str):
         '''
-        Converte uma string em número, substituindo a vírgula dos decimais por ponto.
+        Converte uma string em número, substituindo a vírgula dos decimais 
+        por ponto.
         
         return 
             float ou integer se for número. Se não for, retorna 0
@@ -42,7 +44,8 @@ class Funcoes_auxiliares():
             integer com o ID do Perfil ou 0
         '''
         if request.GET.get('perfil'):
-            id_perfil = Funcoes_auxiliares.converte_numero_str(request.GET.get('perfil')) 
+            id_perfil = Funcoes_auxiliares \
+                .converte_numero_str(request.GET.get('perfil')) 
         elif 'id_perfil_selecionado' in request.session:
             id_perfil = request.session['id_perfil_selecionado']
         else:

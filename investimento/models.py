@@ -35,8 +35,6 @@ class Parametro(models.Model):
         return self.nome
 
 
-
-
 class Usuario(AbstractUser):
     observacao = models.TextField()
 
@@ -346,6 +344,51 @@ class ExtratoOperacao(models.Model):
                 (self.valor_unitario + self.custos_transacao)
             )
 
+
+class PosicaoDataBolsa(models.Model):
+    """
+        Nesta tabela são armazenados as atualizações de valor 
+        dos investimentos listados em bolsa, viabilizando a análise histórica.
+    """
+    ativo = models.ForeignKey(
+        'Ativo', 
+        related_name='posicoesBolsa',
+        on_delete=models.PROTECT
+    )
+    data = models.DateTimeField(default=timezone.now)
+    cota_valor = models.DecimalField(
+        max_digits=19, 
+        decimal_places=4, 
+        default=0,
+        help_text='valor cota na bolsa'
+    )
+    cota_valor_dolar = models.DecimalField(
+        max_digits=19, 
+        decimal_places=4, 
+        default=0,
+        help_text='valor em dolar da cota na bolsa \
+            (investimentos internacionais)'
+    )
+    
+    
+    def __str__(self) -> str:
+        """
+            Altera o nome padrão de exibição do objeto da classe.
+        """
+        
+        if self.ativo.ticket == '':
+            return (
+                self.ativo.nome + ': ' + 
+                self.data.strftime(f"%Y-%m-%d")
+            ) 
+        else:
+            return (
+                self.ativo.ticket + ' - ' + 
+                self.ativo.nome + ': ' + 
+                self.data.strftime(f"%Y-%m-%d")
+            )  
+    
+    
 class PosicaoDataFundo(models.Model):
     """
         Nesta tabela são armazenados as atualizações de valor dos 
@@ -388,45 +431,3 @@ class PosicaoDataFundo(models.Model):
                 self.data.strftime(f"%Y-%m-%d")
             )  
             
-
-class PosicaoDataBolsa(models.Model):
-    """
-        Nesta tabela são armazenados as atualizações de valor 
-        dos investimentos listados em bolsa, viabilizando a análise histórica.
-    """
-    ativo = models.ForeignKey(
-        'Ativo', 
-        related_name='posicoesBolsa',
-        on_delete=models.PROTECT
-    )
-    data = models.DateTimeField(default=timezone.now)
-    cota_valor = models.DecimalField(
-        max_digits=19, 
-        decimal_places=4, 
-        default=0,
-        help_text='valor cota na bolsa'
-    )
-    cota_valor_dolar = models.DecimalField(
-        max_digits=19, 
-        decimal_places=4, 
-        default=0,
-        help_text='valor em dolar da cota na bolsa \
-            (investimentos internacionais)'
-    )
-
-    def __str__(self) -> str:
-        """
-            Altera o nome padrão de exibição do objeto da classe.
-        """
-        
-        if self.ativo_perfil_caixa.ativo.ticket == '':
-            return (
-                self.ativo_perfil_caixa.ativo.nome + ': ' + 
-                self.data.strftime(f"%Y-%m-%d")
-            ) 
-        else:
-            return (
-                self.ativo_perfil_caixa.ativo.ticket + ' - ' + 
-                self.ativo_perfil_caixa.ativo.nome + ': ' + 
-                self.data.strftime(f"%Y-%m-%d")
-            )  
