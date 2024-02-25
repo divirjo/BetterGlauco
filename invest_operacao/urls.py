@@ -1,9 +1,7 @@
 from django.urls import path
-from .views import InicioOperacao, \
-                    RegistraNotaCorretagem, \
-                    OperacaoIndividual, \
-                    OperacaoIndividualNova, \
-                    OperacaoIndividualEditar \
+from .views import InicioOperacao, RegistraNotaCorretagem, \
+     OperacaoIndividual, OperacaoIndividualBolsaNova, \
+     OperacaoIndividualFundoNova, OperacaoIndividualEditar
 
 
 app_name='invest_operacao'
@@ -20,13 +18,16 @@ urlpatterns = [
          RegistraNotaCorretagem.as_view(), 
          name='nota_corretagem'),
      
-    path('individual/', 
+     path('individual/', 
          OperacaoIndividual.as_view(), 
          name='operacao_individual'),
-    path('individual/novo/', 
-         OperacaoIndividualNova.as_view(), 
-         name='operacao_individual_nova'),
-    path('individual/editar/<int:pk>', 
+     path('individual/bolsa/novo/', 
+         OperacaoIndividualBolsaNova.as_view(), 
+         name='operacao_individual_bolsa_nova'),
+     path('individual/fundo/novo/', 
+         OperacaoIndividualFundoNova.as_view(), 
+         name='operacao_individual_fundo_nova'),
+     path('individual/editar/<int:pk>', 
          OperacaoIndividualEditar.as_view(), 
          name='operacao_individual_editar'),
-    ]
+]

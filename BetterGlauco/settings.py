@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "crispy_forms",
     "crispy_tailwind",
-    "djmoney", #configura tipo de dados money
     "django_tables2",
     "django_filters",
     "investimento",

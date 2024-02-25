@@ -54,3 +54,10 @@ class FiltroCorretoraAtivo(FilterSet):
     class Meta:
         model = PosicaoDataFundo
         fields = {'ativo_perfil_caixa__corretora': ['exact']}  
+        
+
+class FiltrosCombinadosCorretora(FilterSet):
+    
+    class Meta:
+        model = PosicaoDataFundo
+        fields = ['ativo_perfil_caixa__corretora', 'ativo_perfil_caixa']

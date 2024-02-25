@@ -17,7 +17,15 @@
         <fieldset class="form-group">
             {{form|crispy}}
         </fieldset>
-        <button class="bg-amber-900 w-full rounded-md text-white text-lg" type="submit">Salvar</button>
+        <button class="w-48 bg-amber-900 py-1 px-4 
+            rounded-md text-white text-lg" type="submit">
+            Salvar
+        </button>
+        <a href="{% url url_retorno %}" 
+        class=" w-48 bg-amber-900 border rounded-md py-1 px-4 
+            text-white text-lg inline-block rounded-md"> 
+            Voltar
+        </a>
     </form>
 </div>
 

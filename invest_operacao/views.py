@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Value
@@ -11,9 +12,10 @@ from django.views.generic import FormView, UpdateView
 
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
 from investimento.models import AtivoPerfilCaixa, ExtratoOperacao
+from invest_atualizacao.cotas_ativo import CotaAtivo
 from .filtros_operacoes import FiltroOperacaoAtivo
 from .forms_operacoes import FormOperacaoNotaCorretagem, \
-                                FormExtratoOperacao
+    FormExtratoOperacaoBolsa, FormExtratoOperacaoFundo
 from .nota_corretagem import registrar_nota_corretagem
 from .tabelas import TabelaExtratoOperacoes, tabelaNotaCorretagem
 
@@ -47,21 +49,18 @@ class OperacaoIndividual(LoginRequiredMixin, tables2.SingleTableMixin, FilterVie
         context = super().get_context_data(**kwargs)
         context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         context['titulo_pagina'] = 'Histórico de Operações'
-        context['nome_parametro'] = 'registrar compra ou venda'
-        context['url_insert'] = 'invest_operacao:operacao_individual_nova'
         return context 
     
     def get_filterset(self, *args, **kwargs):
+        id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         fs = super().get_filterset(*args, **kwargs)
         fs.filters['ativo_perfil_caixa'].field.queryset = \
-            fs.filters['ativo_perfil_caixa'].field.queryset.filter(
-                    subclasse__caixa__perfil_id= \
-                        self.request.session['id_perfil_selecionado']
+            AtivoPerfilCaixa.objects.filter(
+                subclasse__caixa__perfil=id_perfil
+            ).order_by(
+                'ativo__ticket',
+                'ativo__nome'               
             )
-        fs.filters['ativo_perfil_caixa'].field.order_by = (
-            'ativo_perfil_caixa__ativo__ticket',
-            'ativo_perfil_caixa__ativo__nome'
-        )
         return fs
     
     def get_queryset(self, **kwargs):
@@ -69,18 +68,25 @@ class OperacaoIndividual(LoginRequiredMixin, tables2.SingleTableMixin, FilterVie
             ativo_perfil_caixa__subclasse__caixa__perfil=Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
             ).order_by('-data')
 
-class OperacaoIndividualNova(LoginRequiredMixin, FormView):
-    form_class = FormExtratoOperacao
+class OperacaoIndividualBolsaNova(LoginRequiredMixin, FormView):
+    form_class = FormExtratoOperacaoBolsa
     template_name = 'registrar_operacao_individual.html'
     
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['id_perfil_selecionado'] = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        context['nome_parametro'] = 'registrar compra ou venda'
+        id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         
-        #Campo formulário
-        context['form'].fields['ativo_perfil_caixa'].queryset = AtivoPerfilCaixa.objects.filter(subclasse__caixa__perfil=context['id_perfil_selecionado'])
-
+        query_ativos = AtivoPerfilCaixa.objects.filter(
+                subclasse__caixa__perfil=id_perfil,
+                ativo__cota_bolsa=True
+        ).order_by(
+                'ativo__ticket',
+                'ativo__nome'  
+        )
+        
+        context = super().get_context_data(**kwargs)
+        context['id_perfil_selecionado'] = id_perfil
+        context['nome_parametro'] = 'compra ou venda de ativo listado em bolsa'
+        context['form'].fields['ativo_perfil_caixa'].queryset = query_ativos
         return context 
     
     
@@ -90,9 +96,59 @@ class OperacaoIndividualNova(LoginRequiredMixin, FormView):
         messages.success(self.request, 'Operação de {} cadastrada com sucesso'.format(form.cleaned_data['operacao']))
         return redirect('invest_operacao:operacao_individual')   
 
+class OperacaoIndividualFundoNova(LoginRequiredMixin, FormView):
+    form_class = FormExtratoOperacaoFundo
+    template_name = 'registrar_operacao_individual.html'
+
+    
+    def get_context_data(self, **kwargs):
+        id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        
+        query_ativos = AtivoPerfilCaixa.objects.filter(
+            subclasse__caixa__perfil=id_perfil,
+            ativo__cota_bolsa=False
+        ).order_by(
+            'subclasse__caixa__nome',
+        )
+        
+        context = super().get_context_data(**kwargs)
+        context['id_perfil_selecionado'] = id_perfil
+        context['nome_parametro'] = 'compra ou venda de ativo não listado em \
+            bolsa (fundos)'
+        context['form'].fields['ativo_perfil_caixa'].queryset = query_ativos
+        mensagem = 'Atualize o valor atual dos ativos antes de cadastrar uma \
+            operação, para viabilizar o adequado cálculo da quantidade de cotas'
+        messages.info(self.request, mensagem)
+        return context 
+    
+    def form_valid(self, form, **kwargs):     
+        ativo_selecionado = form.cleaned_data['ativo_perfil_caixa'].ativo_id
+        cotas_ativo = CotaAtivo(ativo_selecionado)  
+        valor_operacao = form.cleaned_data['valor_total']
+        valor_cota = cotas_ativo.valorMaisRecente()
+ 
+        operacao = form.save(commit=False)
+        operacao.valor_unitario = valor_cota 
+        operacao.quantidade = Decimal(valor_operacao / valor_cota)
+        
+        # individualizando os custos de transação e imposto de renda
+        operacao.custos_transacao = Decimal(
+            operacao.custos_transacao / operacao.quantidade
+        )
+        operacao.ir_fonte =  Decimal(operacao.ir_fonte / operacao.quantidade)
+           
+        operacao.save() 
+        
+        mensagem = 'Cadastrada a {} do {} registrada com sucesso'.format(
+                operacao.operacao,
+                operacao.ativo_perfil_caixa,
+        )
+        messages.success(self.request, mensagem)
+        return redirect('invest_operacao:operacao_individual') 
+
 
 class OperacaoIndividualEditar(LoginRequiredMixin, UpdateView):
-    form_class = FormExtratoOperacao
+    form_class = FormExtratoOperacaoBolsa
     model = ExtratoOperacao
     template_name = 'registrar_operacao_individual.html'
     

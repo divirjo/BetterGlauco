@@ -3,11 +3,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django_filters.views import FilterView
 from django.shortcuts import redirect
 from django_tables2 import SingleTableMixin
+from django.urls import reverse_lazy
 from django.views.generic import FormView, TemplateView, UpdateView
 
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
-from .cotas_ativo import CotasAtivo
-from .filtros import FiltroAtivoBolsa, FiltroAtivoFundos, FiltroCorretoraAtivo
+from .cotas_ativo import CotaAtivo
+from .filtros import FiltroAtivoBolsa, FiltrosCombinadosCorretora
 from .forms import FormPosicaoDataBolsa, FormEditarPosicaoDataFundo, \
     FormNovaPosicaoDataFundo
 from .tabelas import TabelaPosicaoBolsa, TabelaPosicaoFundos
@@ -52,47 +53,8 @@ class DividendoNovo(LoginRequiredMixin, TemplateView):
     
 
 class DividendoEditar(LoginRequiredMixin, TemplateView):
-    template_name = 'atualizacao_inicio.html'
-    
+    template_name = 'atualizacao_inicio.html'  
 
-class PosicaoCorretora(LoginRequiredMixin, TemplateView):
-    filterset_class = FiltroCorretoraAtivo
-    table_class = TabelaPosicaoFundos
-    template_name = 'posicao_ativo.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        context['id_perfil_selecionado'] = id_perfil 
-        context['titulo_pagina'] = 'Atualizar por ativo'
-        context['nome_parametro'] = 'valor atualizado'
-        context['url_insert'] = 'invest_atualizacao:posicao_individual_nova'
-        return context 
-    
-    
-    def get_filterset(self, *args, **kwargs):
-        id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        fs = super().get_filterset(*args, **kwargs)
-        fs.filters['ativo_perfil_caixa__corretora'].field.queryset = \
-            InstituicaoFinanceira.objects.filter(perfil=id_perfil)
-        return fs
-    
-    
-    def get_queryset(self, **kwargs):
-        id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        query = PosicaoDataFundo.objects.filter(
-                    ativo_perfil_caixa__subclasse__caixa__perfil=id_perfil
-                ).order_by('-data')
-        return query
-    
-
-class PosicaoCorretoraNova(LoginRequiredMixin, TemplateView):
-    template_name = 'atualizacao_inicio.html'
-    
-
-class PosicaoCorretoraEditar(LoginRequiredMixin, TemplateView):
-    template_name = 'atualizacao_inicio.html'
-    
 
 class PosicaoIndividualBolsa(LoginRequiredMixin, SingleTableMixin, FilterView):
     filterset_class = FiltroAtivoBolsa
@@ -134,7 +96,9 @@ class PosicaoIndividualBolsaNova(LoginRequiredMixin, FormView):
         
         context = super().get_context_data(**kwargs)
         context['id_perfil_selecionado'] = id_perfil 
-        context['nome_parametro'] = 'valor atualizado'    
+        context['nome_parametro'] = 'valor atualizado'  
+        context['url_retorno'] = \
+            'invest_atualizacao:posicao_individual_bolsa'  
         context['form'].fields['ativo'].queryset = query_ativos
         return context 
     
@@ -162,6 +126,8 @@ class PosicaoIndividualBolsaEditar(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['id_perfil_selecionado'] = id_perfil 
         context['nome_parametro'] = 'valor atualizado'
+        context['url_retorno'] = \
+            'invest_atualizacao:posicao_individual_bolsa'
         context['form'].fields['ativo'].queryset = query_ativos
         return context 
     
@@ -176,7 +142,7 @@ class PosicaoIndividualBolsaEditar(LoginRequiredMixin, UpdateView):
 
 
 class PosicaoIndividualFundo(LoginRequiredMixin, SingleTableMixin, FilterView):
-    filterset_class = FiltroAtivoFundos
+    filterset_class = FiltrosCombinadosCorretora
     table_class = TabelaPosicaoFundos
     template_name = 'posicao_ativo.html'
     
@@ -194,13 +160,31 @@ class PosicaoIndividualFundo(LoginRequiredMixin, SingleTableMixin, FilterView):
     
     
     def get_filterset(self, *args, **kwargs):
-        fs = super().get_filterset(*args, **kwargs)
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        fs.filters['ativo_perfil_caixa'].field.queryset = \
-            AtivoPerfilCaixa.objects.filter(
-                subclasse__caixa__perfil=id_perfil,
-                ativo__cota_bolsa=False
+        fs = super().get_filterset(*args, **kwargs)
+        
+        fs.filters['ativo_perfil_caixa__corretora'].field.initial = 2
+        fs.filters['ativo_perfil_caixa__corretora'].field.label = 'Corretora'
+        fs.filters['ativo_perfil_caixa__corretora'].field.queryset = \
+            InstituicaoFinanceira.objects.filter(perfil=id_perfil)
+        
+        corretora_selecionada = Funcoes_auxiliares.converte_numero_str(
+            self.request.GET.get('ativo_perfil_caixa__corretora')
+        ) 
+        if corretora_selecionada > 0:
+            fs.filters['ativo_perfil_caixa'].field.queryset = \
+                AtivoPerfilCaixa.objects.filter(
+                    subclasse__caixa__perfil=id_perfil,
+                    ativo__cota_bolsa=False,
+                    corretora=corretora_selecionada
             )
+        else:
+            fs.filters['ativo_perfil_caixa'].field.queryset = \
+                AtivoPerfilCaixa.objects.filter(
+                    subclasse__caixa__perfil=id_perfil,
+                    ativo__cota_bolsa=False
+            )
+            
         return fs
     
     
@@ -221,8 +205,10 @@ class PosicaoIndividualFundoNova(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         context['id_perfil_selecionado'] = id_perfil 
-        context['nome_parametro'] = 'valor atualizado'
-        
+        context['nome_parametro'] = 'valor atualizado'  
+        context['url_retorno'] = \
+            'invest_atualizacao:posicao_individual_fundo'
+                 
         query = AtivoPerfilCaixa.objects.filter(
                 subclasse__caixa__perfil=context['id_perfil_selecionado'],
                 ativo__cota_bolsa=False
@@ -236,19 +222,21 @@ class PosicaoIndividualFundoNova(LoginRequiredMixin, FormView):
         return context 
     
     def form_valid(self, form, **kwargs):
-        cotas_ativo = CotasAtivo()
         valor_total = form.cleaned_data['valor_total']
+        valor_total_dolar = form.cleaned_data['valor_total_dolar']
         
         operacao = form.save(commit=False)
-                
-        total_cotas = cotas_ativo.total(operacao.ativo_perfil_caixa.ativo)
+        
+        cotas_ativo = CotaAtivo(operacao.ativo_perfil_caixa.ativo.id)        
+        total_cotas = cotas_ativo.quantidadeTotal()
         operacao.cota_sistema_valor = valor_total / total_cotas
+        operacao.cota_valor_dolar = valor_total_dolar / total_cotas
         operacao.save() 
         
         mensagem =  'Posição do ativo {} incluída com sucesso' \
             .format(operacao.ativo_perfil_caixa.ativo.nome)
         messages.success(self.request, mensagem)
-        return redirect('invest_atualizacao:posicao_individual_fundo')   
+        return redirect('invest_atualizacao:posicao_individual_fundo_nova')   
     
     
 class PosicaoIndividualFundoEditar(LoginRequiredMixin, UpdateView):
@@ -262,6 +250,8 @@ class PosicaoIndividualFundoEditar(LoginRequiredMixin, UpdateView):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         context['id_perfil_selecionado'] = id_perfil 
         context['nome_parametro'] = 'valor atualizado'
+        context['url_retorno'] = \
+            'invest_atualizacao:posicao_individual_fundo'
         
         query_ativos = AtivoPerfilCaixa.objects \
             .filter(

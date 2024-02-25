@@ -22,12 +22,25 @@
     <div class= "grid justify-center">
         <div class=" grid grid-cols-1 grid-rows-2 gap-x-4 gap-y-0 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"> 
             <p class="col-start-2 row-start-1 text-gray-500" >
-                Adicionar {{ nome_parametro }}?
+                Ativo listado em bolsa
             </p>
 
-            <a href="{% url url_insert %}" 
+            <a href="{% url 'invest_operacao:operacao_individual_bolsa_nova' %}" 
             class=" col-start-2 row-start-2 border rounded-md py-1 px-4 bg-amber-900 text-white inline-block rounded"> 
-                Cadastrar
+                Cadastrar operação
+            </a>
+        </div>
+    </div>
+
+    <div class= "grid justify-center">
+        <div class=" grid grid-cols-1 grid-rows-2 gap-x-4 gap-y-0 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"> 
+            <p class="col-start-2 row-start-1 text-gray-500" >
+                Fundos e ativos não listados
+            </p>
+
+            <a href="{% url 'invest_operacao:operacao_individual_fundo_nova' %}" 
+            class=" col-start-2 row-start-2 border rounded-md py-1 px-4 bg-amber-900 text-white inline-block rounded"> 
+                Cadastrar operação
             </a>
         </div>
     </div>

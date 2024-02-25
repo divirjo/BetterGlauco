@@ -1,7 +1,5 @@
 from django import forms
-from typing import Any
-from investimento.models import ExtratoOperacao, \
-    TipoOperacao
+from investimento.models import ExtratoOperacao, TipoOperacao
 
 
 class FormOperacaoNotaCorretagem(forms.Form):
@@ -21,10 +19,22 @@ class FormOperacaoNotaCorretagem(forms.Form):
     valor_unitario = forms.DecimalField(label='Valor Unitário')
 
 
-class FormExtratoOperacao(forms.ModelForm):
+class FormExtratoOperacaoBolsa(forms.ModelForm):
     
     class Meta:
         model = ExtratoOperacao
         fields = '__all__'
+
         
-        
+class FormExtratoOperacaoFundo(forms.ModelForm):
+    
+    
+    valor_total = forms.DecimalField(
+        label='Valor Total',
+        help_text='Ao preencher o valor total, o sistema calculará automaticamente a quantidade de cotas',
+    )
+    
+    class Meta:
+        model = ExtratoOperacao
+        fields = '__all__'
+        exclude = ('quantidade','valor_unitario')

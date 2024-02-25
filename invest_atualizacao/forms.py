@@ -11,32 +11,26 @@ class FormPosicaoDataBolsa(forms.ModelForm):
         
 class FormNovaPosicaoDataFundo(forms.ModelForm):
     
-    cota_sistema_valor = forms.DecimalField(
-        label='Valor Cota (R$)',
-        required=False,
-        initial=0,
-        widget=forms.TextInput(attrs={'readonly': 'readonly'})
+    valor_total = forms.DecimalField(
+        label='Valor Total (R$)',
+        help_text='Valor será dividido pela quantidade de cotas',
     )
-    cota_valor_dolar = forms.DecimalField(
-        label='Valor Cota (US$)',
-        initial=0,
+    
+    valor_total_dolar = forms.DecimalField(
+        initial=0.00,
+        label='Valor Total (US$)',
+        help_text='Valor será dividido pela quantidade de cotas. Campo \
+            opcional',
         required=False,
     )
-    valor_total = forms.DecimalField(label='Valor Total')
     
     class Meta:
         model = PosicaoDataFundo
         fields = '__all__'
+        exclude = ('cota_sistema_valor', 'cota_valor_dolar')
         
 class FormEditarPosicaoDataFundo(forms.ModelForm):
     
-    cota_sistema_valor = forms.DecimalField(
-        label='Valor Cota (R$)',
-    )
-    cota_valor_dolar = forms.DecimalField(
-        label='Valor Cota (US$)',
-        required=False,
-    )
     
     class Meta:
         model = PosicaoDataFundo

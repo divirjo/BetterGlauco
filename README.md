@@ -2,14 +2,12 @@
 
 ## Documentação
 
-* [AUTOTITLE](/docs/Inicio.md)
+* [Documentação](/docs/Inicio.md)
 
 ## Instalação
 
 ### Variáveis de ambiente
 É necessário configurar um arquivo (.env) com as variáveis de ambiente com as seguintes constantes:
-
-O Banco de dados foi configurado para o Postgree SQL na [Railway](https://railway.app/)
 
 HOST_TESTES="127.0.0.1"
 ATIVAR_DEBUG="True"
@@ -20,8 +18,9 @@ DB_PASSWORD=""
 DB_HOST=""
 DB_PORT=""
 
-### Variáveis de expressão monetária
-Para os campos do banco de dados que utilizam variáveis monetárias, utilizamos o modelo [django-money](https://github.com/django-money/django-money)
+
+O Banco de dados foi configurado para o Postgree SQL na [Supabase](https://supabase.com/)
+
 
 
 ### Deploy na Vercel

@@ -23,5 +23,5 @@ Para auxiliar na construção dos fluxos em markdown, estamos utilizando o [Merm
 ```
 
 Módulos:
-* [AUTOTITLE](/docs/modulo_atualizacao.md)
-* [AUTOTITLE](/docs/modulo_operacoes.md)
+* Cadastro das compras e vendas realizadas: [Operações](/docs/modulo_operacoes.md)
+* Cadastro dos preços dos ativos: [Atualização](/docs/modulo_atualizacao.md)

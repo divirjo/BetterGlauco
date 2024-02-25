@@ -1,7 +1,6 @@
 from django.urls import path
 from .views import InicioAtualizacao, \
     DividendosInicio, DividendoNovo, DividendoEditar, \
-    PosicaoCorretora, PosicaoCorretoraNova, PosicaoCorretoraEditar, \
     PosicaoIndividualBolsa, PosicaoIndividualBolsaNova, \
     PosicaoIndividualBolsaEditar, \
     PosicaoIndividualFundo, PosicaoIndividualFundoNova, \
@@ -15,16 +14,6 @@ urlpatterns = [
     path('', 
         InicioAtualizacao.as_view(), 
         name='inicio_atualizacao'),
-     
-    path('corretora/', 
-        PosicaoCorretora.as_view(), 
-        name='posicao_corretora'),
-    path('corretora/novo/', 
-        PosicaoCorretoraNova.as_view(), 
-        name='posicao_corretora_nova'),
-    path('corretora/editar/<int:pk>', 
-        PosicaoCorretoraEditar.as_view(), 
-        name='posicao_corretora_editar'),
      
     path('dividendos/', 
         DividendosInicio.as_view(), 

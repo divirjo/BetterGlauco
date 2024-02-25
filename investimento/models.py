@@ -282,32 +282,38 @@ class ExtratoOperacao(models.Model):
     ativo_perfil_caixa = models.ForeignKey(
         'AtivoPerfilCaixa', 
         related_name='operacoes',
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        verbose_name='Ativo',
     )
     data = models.DateTimeField(default=timezone.now)
     operacao = models.CharField(
         max_length=10, 
-        choices=TipoOperacao.choices
+        choices=TipoOperacao.choices,
+        verbose_name='Operação',
     )
     valor_unitario = models.DecimalField(
         max_digits=19, 
         decimal_places=4, 
-        default=0
+        default=0,
+        verbose_name='Valor unitário',
     )
     custos_transacao = models.DecimalField(
         max_digits=19, 
         decimal_places=4, 
-        default=0
+        default=0,
+        verbose_name='Custos de transação',
     )
     ir_fonte = models.DecimalField(
         max_digits=19, 
         decimal_places=4, 
-        default=0
+        default=0,
+        verbose_name='Imposto de Renda retido na fonte',
     )
     quantidade = models.DecimalField(
         max_digits=15,
         decimal_places=10,
-        default=0
+        default=0,
+        verbose_name='Cotas',
     )
 
     
@@ -352,21 +358,28 @@ class PosicaoDataBolsa(models.Model):
     ativo = models.ForeignKey(
         'Ativo', 
         related_name='posicoesBolsa',
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        verbose_name='Ativo',
     )
-    data = models.DateTimeField(default=timezone.now)
+    data = models.DateTimeField(
+        default=timezone.now,
+        help_text='Data da atualização da cota',
+        verbose_name='Data',
+    )
     cota_valor = models.DecimalField(
         max_digits=19, 
         decimal_places=4, 
         default=0,
-        help_text='valor cota na bolsa'
+        help_text='valor cota na bolsa',
+        verbose_name='Valor cota (R$)',
     )
     cota_valor_dolar = models.DecimalField(
         max_digits=19, 
         decimal_places=4, 
         default=0,
         help_text='valor em dolar da cota na bolsa \
-            (investimentos internacionais)'
+            (investimentos internacionais)',
+        verbose_name='Valor cota (US$)',
     )
     
     def __str__(self) -> str:
@@ -395,20 +408,27 @@ class PosicaoDataFundo(models.Model):
     ativo_perfil_caixa = models.ForeignKey(
         'AtivoPerfilCaixa', 
         related_name='posicoes',
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        verbose_name="Ativo",
     )
-    data = models.DateTimeField(default=timezone.now)
+    data = models.DateTimeField(
+        default=timezone.now,
+        help_text='Data da atualização da cota',
+        verbose_name='Data',
+    )
     cota_sistema_valor = models.DecimalField(
         max_digits=19, 
         decimal_places=4, 
         default=0,
-        help_text='valor cota do sistema'
+        help_text='valor cota do sistema',
+        verbose_name='Valor cota (R$)',
     )
     cota_valor_dolar = models.DecimalField(
         max_digits=19, 
         decimal_places=4, 
         default=0,
-        help_text='valor em dolar da cota (investimentos internacionais)'
+        help_text='valor em dolar da cota (investimentos internacionais)',
+        verbose_name='Valor cota (US$)',
     )
 
     def __str__(self) -> str:
@@ -439,12 +459,16 @@ class PosicaoDataFundo(models.Model):
                 ativo_perfil_caixa__ativo=self.ativo_perfil_caixa.ativo,
             ).exclude(operacao=TipoOperacao.VENDA) \
             .aggregate(models.Sum('quantidade'))
+        if total_adquirido['quantidade__sum'] is None:
+            total_adquirido['quantidade__sum'] = 0
             
         total_vendido = ExtratoOperacao.objects \
             .filter(
                 ativo_perfil_caixa__ativo=self.ativo_perfil_caixa.ativo,
                 operacao=TipoOperacao.VENDA
             ).aggregate(models.Sum('quantidade'))
+        if total_vendido['quantidade__sum'] is None:
+            total_vendido['quantidade__sum'] = 0
          
         saldo_cotas = total_adquirido['quantidade__sum'] - \
             total_vendido['quantidade__sum'] 
