@@ -1,4 +1,7 @@
+#!/bin/bash
 
+# Adicione o diretório ao PATH
+export PATH=$PATH:/python312/bin
 
 # Build the project
 echo "____________________________________________________________________"
@@ -8,7 +11,7 @@ python3 -m pip install --upgrade pip
 python3 -m pip install -r requirements.txt
 #python -V
 python3 -V
-export PYTHONPATH="${PYTHONPATH}://python312/bin"
+
 
 echo "____________________________________________________________________"
 echo "                 Executando as migrações"
