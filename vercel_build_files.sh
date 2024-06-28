@@ -9,8 +9,8 @@ echo "____________________________________________________________________"
 echo "                  POETRY"
 echo "____________________________________________________________________"
 pip install pipx
-pipx ensurepath
 pipx install poetry
+pipx ensurepath
 
 echo "____________________________________________________________________"
 echo "                  DEPENDENCIAS PYTHON"
