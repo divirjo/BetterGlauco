@@ -1,32 +1,20 @@
 
 
+# Build the project
 echo "____________________________________________________________________"
-echo "                  PYENV"
+echo "                 Instalar dependências"
 echo "____________________________________________________________________"
-
-
-echo "____________________________________________________________________"
-echo "                  POETRY"
-echo "____________________________________________________________________"
-pip install pipx
-pipx install poetry
-pipx ensurepath
+python3 -m pip install --upgrade pip
+python3 -m pip install -r requirements.txt
+python -V
+python3 -V
 
 echo "____________________________________________________________________"
-echo "                  DEPENDENCIAS PYTHON"
+echo "                 Executando as migrações"
 echo "____________________________________________________________________"
-poetry install
-poetry -m env use python3.12
-python3 -m poetry shell
-python3 -m poetry env info
-
-echo "____________________________________________________________________"
-echo "                  DJANGO"
-echo "____________________________________________________________________"
-
-echo "### Executando as migrações ###"
 python3 manage.py makemigrations 
 python3 manage.py migrate 
 
-echo "### Obter arquivos estáticos ###"
-python3 manage.py collectstatic 
+
+#echo "### Obter arquivos estáticos ###"
+#python3 manage.py collectstatic 
