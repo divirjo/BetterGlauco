@@ -1,51 +1,68 @@
+import django_tables2 as tables2
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django_filters.views import FilterView
 from django.shortcuts import redirect
-import django_tables2 as tables2 
 from django.views.generic import FormView, TemplateView, UpdateView
+from django_filters.views import FilterView
 
 from BetterGlauco.funcoes_auxiliares import Funcoes_auxiliares
+from investimento.models import (
+    Ativo,
+    AtivoPerfilCaixa,
+    Caixa,
+    ClasseAtivo,
+    InstituicaoFinanceira,
+)
+from investimento.tabelas import (
+    TabelaAtivos,
+    TabelaCaixas,
+    TabelaClasseAtivo,
+    TabelaInstituicaoFinanceira,
+)
+
 from .filtros import FiltroAtivo, FiltroClasseAtivo
-from .forms import FormAtivo, FormAtivoPerfilCaixa, FormCaixa, \
-    FormClasseAtivo, FormInstituicaoFinanceira
-from investimento.models import Ativo, AtivoPerfilCaixa, Caixa, ClasseAtivo, \
-    InstituicaoFinanceira
-from investimento.tabelas import TabelaAtivos, TabelaCaixas, \
-    TabelaClasseAtivo, TabelaInstituicaoFinanceira
+from .forms import (
+    FormAtivo,
+    FormAtivoPerfilCaixa,
+    FormCaixa,
+    FormClasseAtivo,
+    FormInstituicaoFinanceira,
+)
 from .tabela_alocacao import TabelaAlocacao
 
 
 class InicioAlocacao(LoginRequiredMixin, TemplateView):
     template_name = 'alocacao_inicio.html'
-    
+
     def get_context_data(self, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         tabela = TabelaAlocacao(id_perfil)
-        
+
         context = super().get_context_data(**kwargs)
         context['id_perfil_selecionado'] = id_perfil
         context['tabela'] = tabela.getTabelaAlocacaoTeorica()
-        return context 
+        return context
+
 
 class ConfiguracaoMenu(LoginRequiredMixin, TemplateView):
     template_name = 'configuracao_inicio.html'
-    
+
     def get_context_data(self, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         context = super().get_context_data(**kwargs)
         context['id_perfil_selecionado'] = id_perfil
-        return context 
+        return context
 
 
-class ConfigurarAtivo(LoginRequiredMixin, tables2.SingleTableMixin, FilterView):
+class ConfigurarAtivo(
+    LoginRequiredMixin, tables2.SingleTableMixin, FilterView
+):
     filterset_class = FiltroAtivo
-    queryset = Ativo.objects.order_by('ticket','nome')
+    queryset = Ativo.objects.order_by('ticket', 'nome')
     model = Ativo
     table_class = TabelaAtivos
     template_name = 'configuracao_filtrar_tabela.html'
 
-       
     def get_context_data(self, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         context = super().get_context_data(**kwargs)
@@ -55,13 +72,13 @@ class ConfigurarAtivo(LoginRequiredMixin, tables2.SingleTableMixin, FilterView):
         context['id_perfil_selecionado'] = id_perfil
         mensagem = 'Cadastro geral. Alterações aqui afetarão todos os \
             usuários do sistema'
-        messages.warning(self.request,mensagem)
-        return context 
+        messages.warning(self.request, mensagem)
+        return context
+
 
 class ConfigurarAtivoNovo(LoginRequiredMixin, FormView):
     form_class = FormAtivo
     template_name = 'configuracao_editar_tabela.html'
-    
 
     def get_context_data(self, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
@@ -70,14 +87,15 @@ class ConfigurarAtivoNovo(LoginRequiredMixin, FormView):
         context['id_perfil_selecionado'] = id_perfil
         mensagem = 'Cadastro geral. Alterações aqui afetarão todos os \
             usuários do sistema'
-        messages.warning(self.request,mensagem)
-        return context 
-    
+        messages.warning(self.request, mensagem)
+        return context
+
     def form_valid(self, form, **kwargs):
-        form.save() # insere o item no BD
+        form.save()  # insere o item no BD
         messages.success(self.request, 'Ativo incluído com sucesso')
         return redirect('invest_alocacao:config_ativos')
-    
+
+
 class ConfigurarAtivoEditar(LoginRequiredMixin, UpdateView):
     form_class = FormAtivo
     model = Ativo
@@ -90,23 +108,22 @@ class ConfigurarAtivoEditar(LoginRequiredMixin, UpdateView):
         context['id_perfil_selecionado'] = id_perfil
         mensagem = 'Cadastro geral. Alterações aqui afetarão todos os \
             usuários do sistema'
-        messages.warning(self.request,mensagem)
-        return context 
-    
+        messages.warning(self.request, mensagem)
+        return context
+
     def form_valid(self, form, **kwargs):
-        form.save() # insere o item no BD
+        form.save()  # insere o item no BD
         messages.success(self.request, 'Ativo alterado com sucesso')
         return redirect('invest_alocacao:config_ativos')
 
 
 class ConfigurarAtivoAlocacao(LoginRequiredMixin, TemplateView):
     template_name = 'alocacao_teorica_completa.html'
-    
-    
+
     def get_context_data(self, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         tabela = TabelaAlocacao(id_perfil)
-        
+
         context = super().get_context_data(**kwargs)
         context['titulo_pagina'] = 'Ativos: cadastrar alocação'
         context['nome_parametro'] = 'alocacao ativo'
@@ -114,7 +131,7 @@ class ConfigurarAtivoAlocacao(LoginRequiredMixin, TemplateView):
         context['url_edit'] = 'invest_alocacao:config_ativo_alocacao_editar'
         context['id_perfil_selecionado'] = id_perfil
         context['tabela'] = tabela.getTabelaAlocacaoTeorica()
-        return context 
+        return context
 
 
 class ConfigurarAtivoAlocacaoNovo(LoginRequiredMixin, FormView):
@@ -126,25 +143,28 @@ class ConfigurarAtivoAlocacaoNovo(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         context['nome_parametro'] = 'alocacao ativo'
         context['id_perfil_selecionado'] = id_perfil
-        context['form'].fields['subclasse'].queryset = ClasseAtivo.objects \
-            .filter(caixa__perfil=id_perfil)
-        context['form'].fields['corretora'].queryset = InstituicaoFinanceira. \
-            objects.filter(perfil=id_perfil)
-        context['form'].fields['ativo'].queryset = Ativo.objects \
-            .order_by('ticket','nome')
+        context['form'].fields[
+            'subclasse'
+        ].queryset = ClasseAtivo.objects.filter(caixa__perfil=id_perfil)
+        context['form'].fields[
+            'corretora'
+        ].queryset = InstituicaoFinanceira.objects.filter(perfil=id_perfil)
+        context['form'].fields['ativo'].queryset = Ativo.objects.order_by(
+            'ticket', 'nome'
+        )
         return context
-       
-    
+
     def form_valid(self, form, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
 
         caixa = form.save(commit=False)
         caixa.perfil_id = id_perfil
         caixa.save()
-        
+
         mensagem = 'Alocação do ativo cadastrada com sucesso'
-        messages.warning(self.request,mensagem)
-        return redirect('invest_alocacao:config_ativos_alocacao')    
+        messages.warning(self.request, mensagem)
+        return redirect('invest_alocacao:config_ativos_alocacao')
+
 
 class ConfigurarAtivoAlocacaoEditar(LoginRequiredMixin, UpdateView):
     form_class = FormAtivoPerfilCaixa
@@ -156,35 +176,36 @@ class ConfigurarAtivoAlocacaoEditar(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['nome_parametro'] = 'alocação ativo'
         context['id_perfil_selecionado'] = id_perfil
-        context['form'].fields['subclasse'].queryset = ClasseAtivo.objects \
-            .filter(caixa__perfil=id_perfil)
-        context['form'].fields['corretora'].queryset = InstituicaoFinanceira. \
-            objects.filter(perfil=id_perfil)
-        return context 
-    
+        context['form'].fields[
+            'subclasse'
+        ].queryset = ClasseAtivo.objects.filter(caixa__perfil=id_perfil)
+        context['form'].fields[
+            'corretora'
+        ].queryset = InstituicaoFinanceira.objects.filter(perfil=id_perfil)
+        return context
+
     def form_valid(self, form, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
 
         caixa = form.save(commit=False)
         caixa.perfil_id = id_perfil
-        caixa.save() 
-        
-        mensagem='Alocação do ativo cadastrada com sucesso'
+        caixa.save()
+
+        mensagem = 'Alocação do ativo cadastrada com sucesso'
         messages.success(self.request, mensagem)
-        return redirect('invest_alocacao:config_ativos_alocacao')  
+        return redirect('invest_alocacao:config_ativos_alocacao')
 
 
 class ConfigurarCaixa(LoginRequiredMixin, tables2.SingleTableView):
     table_class = TabelaCaixas
     template_name = 'configuracao_listar_tabela.html'
-    
-    
+
     def get_queryset(self, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        return Caixa.objects \
-            .filter(perfil_id=id_perfil) \
-            .order_by('ordem_exibicao','nome')
-           
+        return Caixa.objects.filter(perfil_id=id_perfil).order_by(
+            'ordem_exibicao', 'nome'
+        )
+
     def get_context_data(self, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         context = super().get_context_data(**kwargs)
@@ -192,7 +213,8 @@ class ConfigurarCaixa(LoginRequiredMixin, tables2.SingleTableView):
         context['nome_parametro'] = 'caixa'
         context['url_insert'] = 'invest_alocacao:config_caixa_novo'
         context['id_perfil_selecionado'] = id_perfil
-        return context 
+        return context
+
 
 class ConfigurarCaixaNovo(LoginRequiredMixin, FormView):
     form_class = FormCaixa
@@ -203,18 +225,19 @@ class ConfigurarCaixaNovo(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         context['nome_parametro'] = 'caixa'
         context['id_perfil_selecionado'] = id_perfil
-        return context 
-    
+        return context
+
     def form_valid(self, form, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
 
         caixa = form.save(commit=False)
         caixa.perfil_id = id_perfil
-        caixa.save() 
-        
+        caixa.save()
+
         messages.success(self.request, 'Caixa cadastrada com sucesso')
         return redirect('invest_alocacao:config_ativos_alocacao')
-    
+
+
 class ConfigurarCaixaEditar(LoginRequiredMixin, UpdateView):
     form_class = FormCaixa
     model = Caixa
@@ -225,43 +248,43 @@ class ConfigurarCaixaEditar(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['nome_parametro'] = 'caixa'
         context['id_perfil_selecionado'] = id_perfil
-        return context 
-    
+        return context
+
     def form_valid(self, form, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        
+
         caixa = form.save(commit=False)
         caixa.perfil_id = id_perfil
-        caixa.save() 
-        
+        caixa.save()
+
         messages.success(self.request, 'Caixa atualizada com sucesso')
-        return redirect('invest_alocacao:config_caixa')  
+        return redirect('invest_alocacao:config_caixa')
+
 
 class ConfigurarSubCaixa(
-    LoginRequiredMixin, 
-    tables2.SingleTableMixin, 
-    FilterView
+    LoginRequiredMixin, tables2.SingleTableMixin, FilterView
 ):
     table_class = TabelaClasseAtivo
     model = ClasseAtivo
     filterset_class = FiltroClasseAtivo
     template_name = 'configuracao_filtrar_tabela.html'
-    
+
     def get_filterset(self, *args, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         fs = super().get_filterset(*args, **kwargs)
-        fs.filters['caixa'].field.queryset = fs.filters['caixa'].field \
-            .queryset.filter(perfil_id=id_perfil) \
-            .order_by('ordem_exibicao','nome')
+        fs.filters['caixa'].field.queryset = (
+            fs.filters['caixa']
+            .field.queryset.filter(perfil_id=id_perfil)
+            .order_by('ordem_exibicao', 'nome')
+        )
         return fs
-    
+
     def get_queryset(self, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        return ClasseAtivo.objects \
-            .filter(caixa__perfil_id=id_perfil) \
-            .order_by('caixa__ordem_exibicao','caixa__nome','nome')
-    
-    
+        return ClasseAtivo.objects.filter(caixa__perfil_id=id_perfil).order_by(
+            'caixa__ordem_exibicao', 'caixa__nome', 'nome'
+        )
+
     def get_context_data(self, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         context = super().get_context_data(**kwargs)
@@ -269,11 +292,11 @@ class ConfigurarSubCaixa(
         context['nome_parametro'] = 'classe ativo'
         context['url_insert'] = 'invest_alocacao:config_classe_ativo_novo'
         context['id_perfil_selecionado'] = id_perfil
-        return context 
-    
+        return context
+
     def montaTabelaCaixas(query):
         return query
-        
+
 
 class ConfigurarSubCaixaNovo(LoginRequiredMixin, FormView):
     form_class = FormClasseAtivo
@@ -284,21 +307,23 @@ class ConfigurarSubCaixaNovo(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         context['nome_parametro'] = 'classe ativo'
         context['id_perfil_selecionado'] = id_perfil
-        context['form'].fields['caixa'].queryset = Caixa.objects \
-            .filter(perfil=id_perfil)
-        return context 
-    
+        context['form'].fields['caixa'].queryset = Caixa.objects.filter(
+            perfil=id_perfil
+        )
+        return context
+
     def form_valid(self, form, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        
+
         caixa = form.save(commit=False)
         caixa.perfil_id = id_perfil
         caixa.save()
-        
+
         mensagem = 'Classe de ativo cadastrada com sucesso'
-        messages.success(self.request,mensagem)
+        messages.success(self.request, mensagem)
         return redirect('invest_alocacao:config_classe_ativo')
-    
+
+
 class ConfigurarSubCaixaEditar(LoginRequiredMixin, UpdateView):
     form_class = FormClasseAtivo
     model = ClasseAtivo
@@ -309,44 +334,45 @@ class ConfigurarSubCaixaEditar(LoginRequiredMixin, UpdateView):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         context['nome_parametro'] = 'classe ativo'
         context['id_perfil_selecionado'] = id_perfil
-        context['form'].fields['caixa'].queryset = Caixa.objects \
-            .filter(perfil=context['id_perfil_selecionado'])
-        return context 
-    
+        context['form'].fields['caixa'].queryset = Caixa.objects.filter(
+            perfil=context['id_perfil_selecionado']
+        )
+        return context
+
     def form_valid(self, form, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        
+
         caixa = form.save(commit=False)
         caixa.perfil_id = id_perfil
         caixa.save()
-         
+
         messages.success(self.request, 'Classe ativo atualizada com sucesso')
-        return redirect('invest_alocacao:config_classe_ativo')  
+        return redirect('invest_alocacao:config_classe_ativo')
 
 
 class ConfigurarInstituicaoFinanceira(
-    LoginRequiredMixin, 
-    tables2.SingleTableView
+    LoginRequiredMixin, tables2.SingleTableView
 ):
     table_class = TabelaInstituicaoFinanceira
     template_name = 'configuracao_listar_tabela.html'
-    
-    
+
     def get_queryset(self, **kwargs):
-        id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs) 
-        return InstituicaoFinanceira.objects \
-            .filter(perfil_id=id_perfil) \
-            .order_by('nome')
-           
+        id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
+        return InstituicaoFinanceira.objects.filter(
+            perfil_id=id_perfil
+        ).order_by('nome')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         context['id_perfil_selecionado'] = id_perfil
         context['titulo_pagina'] = 'Instituições Financeiras Cadastradas'
         context['nome_parametro'] = 'instituição financeira'
-        context['url_insert'] = \
+        context['url_insert'] = (
             'invest_alocacao:config_instituicao_financeira_novo'
-        return context 
+        )
+        return context
+
 
 class ConfigurarInstituicaoFinanceiraNovo(LoginRequiredMixin, FormView):
     form_class = FormInstituicaoFinanceira
@@ -357,18 +383,19 @@ class ConfigurarInstituicaoFinanceiraNovo(LoginRequiredMixin, FormView):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         context['nome_parametro'] = 'instituição financeira'
         context['id_perfil_selecionado'] = id_perfil
-        return context 
-    
+        return context
+
     def form_valid(self, form, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        
+
         instituicao_financeira = form.save(commit=False)
         instituicao_financeira.perfil_id = id_perfil
-        instituicao_financeira.save() 
-        
+        instituicao_financeira.save()
+
         messages.success(self.request, 'Instituição incluída com sucesso')
         return redirect('invest_alocacao:config_instituicao_financeira')
-    
+
+
 class ConfigurarInstituicaoFinanceiraEditar(LoginRequiredMixin, UpdateView):
     form_class = FormInstituicaoFinanceira
     model = InstituicaoFinanceira
@@ -379,16 +406,15 @@ class ConfigurarInstituicaoFinanceiraEditar(LoginRequiredMixin, UpdateView):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
         context['nome_parametro'] = 'instituição financeira'
         context['id_perfil_selecionado'] = id_perfil
-        return context 
-    
+        return context
+
     def form_valid(self, form, **kwargs):
         id_perfil = Funcoes_auxiliares.get_perfil_ativo(self.request, **kwargs)
-        
+
         instituicao_financeira = form.save(commit=False)
         instituicao_financeira.perfil_id = id_perfil
-        instituicao_financeira.save() 
-        form.save() 
-        
-        messages.success(self.request, 'Instituição alterada com sucesso')
-        return redirect('invest_alocacao:config_instituicao_financeira') 
+        instituicao_financeira.save()
+        form.save()
 
+        messages.success(self.request, 'Instituição alterada com sucesso')
+        return redirect('invest_alocacao:config_instituicao_financeira')

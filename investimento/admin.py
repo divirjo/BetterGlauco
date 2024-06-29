@@ -1,6 +1,17 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Ativo, AtivoPerfilCaixa, Caixa, ExtratoOperacao, InstituicaoFinanceira, Parametro, Perfil, PosicaoDataFundo, Usuario
+
+from .models import (
+    Ativo,
+    AtivoPerfilCaixa,
+    Caixa,
+    ExtratoOperacao,
+    InstituicaoFinanceira,
+    Parametro,
+    Perfil,
+    PosicaoDataFundo,
+    Usuario,
+)
 
 campos_usuario = list(UserAdmin.fieldsets)
 campo = ('Personalização', {'fields': ('observacao',)})
@@ -18,5 +29,3 @@ admin.site.register(Ativo)
 admin.site.register(AtivoPerfilCaixa)
 admin.site.register(PosicaoDataFundo)
 admin.site.register(ExtratoOperacao)
-
-
